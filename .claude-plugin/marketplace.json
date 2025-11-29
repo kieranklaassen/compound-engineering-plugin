@@ -21,6 +21,19 @@
       "homepage": "https://github.com/EveryInc/compounding-engineering-plugin",
       "tags": ["ai-powered", "compounding-engineering", "workflow-automation", "code-review", "quality", "knowledge-management", "image-generation"],
       "source": "./plugins/compounding-engineering"
+    },
+    {
+      "name": "compounding-engineering-lite",
+      "description": "Lightweight practices-focused plugin for any project. Code review with continuous learning via .claude/practices/. Includes 6 specialized agents, 2 commands, and 1 skill.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Kieran Klaassen",
+        "url": "https://github.com/kieranklaassen",
+        "email": "kieran@every.to"
+      },
+      "homepage": "https://github.com/EveryInc/compounding-engineering-plugin",
+      "tags": ["ai-powered", "compounding-engineering", "code-review", "practices", "continuous-learning", "lightweight"],
+      "source": "./plugins/compounding-engineering-lite"
     }
   ]
 }
