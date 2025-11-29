@@ -100,28 +100,21 @@ Now review the changelog using the EVERY_WRITE_STYLE.md file and go one by one t
 
 Remember, your final output should only include the content within the <change_log> tags. Do not include any of your thought process or the original data in the output.
 
-## Discord Posting
+## Discord Posting (Optional)
 
-Once you have the changelog, post it to Discord using the following commands:
-
-### Post to default channel:
+You can post changelogs to Discord by adding your own webhook URL:
 
 ```
-rails runner 'DiscordWebhookClient.new.send_message(content: "{{CHANGELOG}}")'
+# Set your Discord webhook URL
+DISCORD_WEBHOOK_URL="https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN"
+
+# Post using curl
+curl -H "Content-Type: application/json" \
+  -d "{\"content\": \"{{CHANGELOG}}\"}" \
+  $DISCORD_WEBHOOK_URL
 ```
 
-### Post to 🌤cora channel:
-
-```
-# Write changelog to temporary file
-File.write("/tmp/changelog.txt", changelog_content)
-
-# Post to Discord
-rails runner 'content = File.read("/tmp/changelog.txt"); DiscordWebhookClient.new(token: "https://discord.com/api/webhooks/1378934451735760926/HUpZ81La0aPcbFspgwAsJZ7fcN1-6sj37BhRtrHeG19rhPnX5zZSpM8NttST6Qkb48uh").send_message(content: content)'
-
-# Clean up
-rm /tmp/changelog.txt
-```
+To get a webhook URL, go to your Discord server → Server Settings → Integrations → Webhooks → New Webhook.
 
 ## Error Handling
 
