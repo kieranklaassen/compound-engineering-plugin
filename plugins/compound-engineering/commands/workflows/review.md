@@ -171,7 +171,7 @@ Run the Task code-simplicity-reviewer() to see if we can simplify the code.
 
 ### 5. Findings Synthesis and Todo Creation Using file-todos Skill
 
-<critical_requirement> ALL findings MUST be stored in the todos/ directory using the file-todos skill. Create todo files immediately after synthesis - do NOT present findings for user approval first. Use the skill for structured todo management. </critical_requirement>
+<critical_requirement> ALL findings MUST be stored in the docs/todos/ directory using the file-todos skill. Create todo files immediately after synthesis - do NOT present findings for user approval first. Use the skill for structured todo management. </critical_requirement>
 
 #### Step 1: Synthesize All Findings
 
@@ -360,7 +360,7 @@ After creating all todo files, present comprehensive summary:
 
 2. **Triage All Todos**:
    ```bash
-   ls todos/*-pending-*.md  # View all pending todos
+   ls docs/todos/*-pending-*.md  # View all pending todos
    /triage                  # Use slash command for interactive triage
    ```
 ````
@@ -374,7 +374,7 @@ After creating all todo files, present comprehensive summary:
 4. **Track Progress**:
    - Rename file when status changes: pending → ready → complete
    - Update Work Log as you work
-   - Commit todos: `git add todos/ && git commit -m "refactor: add code review findings"`
+   - Commit todos: `git add docs/todos/ && git commit -m "refactor: add code review findings"`
 
 ### Severity Breakdown:
 

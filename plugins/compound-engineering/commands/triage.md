@@ -5,7 +5,7 @@ argument-hint: "[findings list or source type]"
 ---
 
 - First set the /model to Haiku
-- Then read all pending todos in the todos/ directory
+- Then read all pending todos in the docs/todos/ directory
 
 Present all findings, decisions, or issues here one by one for triage. The goal is to go through each item and decide whether to add it to the CLI todo system.
 
@@ -148,7 +148,7 @@ Do you want to add this to the todo list?
 
 **When user says "next":**
 
-- **Delete the todo file** - Remove it from todos/ directory since it's not relevant
+- **Delete the todo file** - Remove it from docs/todos/ directory since it's not relevant
 - Skip to the next item
 - Track skipped items for summary
 
@@ -181,22 +181,22 @@ After all items processed:
 
 ### Skipped Items (Deleted):
 
-- Item #5: [reason] - Removed from todos/
-- Item #12: [reason] - Removed from todos/
+- Item #5: [reason] - Removed from docs/todos/
+- Item #12: [reason] - Removed from docs/todos/
 
 ### Summary of Changes Made:
 
 During triage, the following status updates occurred:
 
 - **Pending → Ready:** Filenames and frontmatter updated to reflect approved status
-- **Deleted:** Todo files for skipped findings removed from todos/ directory
+- **Deleted:** Todo files for skipped findings removed from docs/todos/ directory
 - Each approved file now has `status: ready` in YAML frontmatter
 
 ### Next Steps:
 
 1. View approved todos ready for work:
    ```bash
-   ls todos/*-ready-*.md
+   ls docs/todos/*-ready-*.md
    ```
 ````
 
@@ -271,7 +271,7 @@ Do you want to add this to the todo list?
 4. Confirm: "✅ Approved: `{filename}` (Issue #{issue_id}) - Status: **ready**"
 
 **When "next" is selected:**
-1. Delete the todo file from todos/ directory
+1. Delete the todo file from docs/todos/ directory
 2. Skip to next item
 3. No file remains in the system
 
