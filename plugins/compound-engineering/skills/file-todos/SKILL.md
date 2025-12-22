@@ -63,8 +63,17 @@ priority: p1              # p1 | p2 | p3
 issue_id: "002"
 tags: [rails, performance, database]
 dependencies: ["001"]     # Issue IDs this is blocked by
+linear_issue: "ENG-123"   # Optional: Linear issue ID if tracked in Linear
 ---
 ```
+
+**Linear Integration:**
+
+If using Linear for project tracking, todos can reference Linear issues:
+- Add `linear_issue: "ENG-123"` to YAML frontmatter
+- File naming can optionally include Linear ID: `001-pending-p1-ENG-123-feature-name.md`
+- Status sync: Update todo status when Linear issue status changes
+- Bidirectional reference: Linear issue comments can link back to todo file
 
 ## Common Workflows
 

@@ -15,6 +15,22 @@ Your primary mission is to:
 
 When you receive a specification, plan, or feature description, you will:
 
+## Phase 0: Gather Linear Context (Optional)
+
+If the specification references a Linear issue or project:
+- Check for Linear issue ID pattern (e.g., `ENG-123`, `TEAM-456`) in the spec content
+- Use `mcp__linear__get_issue` to fetch issue details including:
+  - Issue description and acceptance criteria
+  - Priority and status
+  - Related issues or dependencies
+  - Comments and discussion threads
+- If a project is mentioned, use `mcp__linear__get_projects` to understand project context
+- Use this information to:
+  - Validate flows against stated acceptance criteria
+  - Understand business priorities and constraints
+  - Identify related work that might affect user flows
+  - Check if similar flows exist in other issues for consistency
+
 ## Phase 1: Deep Flow Analysis
 
 - Map every distinct user journey from start to finish

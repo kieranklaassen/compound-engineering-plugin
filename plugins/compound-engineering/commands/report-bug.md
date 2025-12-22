@@ -94,9 +94,16 @@ Create a well-structured bug report with:
 *Reported via `/report-bug` command*
 ```
 
-## Step 4: Create GitHub Issue
+## Step 4: Detect Project Tracker
 
-Use the GitHub CLI to create the issue:
+Check the user's CLAUDE.md for project tracker preference:
+- Look for `project_tracker: github` or `project_tracker: linear`
+- Default to GitHub for compound-engineering plugin bugs
+- For user's own projects, use their configured tracker
+
+## Step 5: Create Issue
+
+### If GitHub (default for plugin bugs):
 
 ```bash
 gh issue create \
@@ -114,15 +121,42 @@ gh issue create \
   --body "[Formatted bug report]"
 ```
 
-## Step 5: Confirm Submission
+### If Linear (for user's projects):
+
+**Step 1: Get team and project context**
+- Use `mcp__linear__get_teams` to list available teams
+- Ask user to select team
+- Use `mcp__linear__get_projects` for selected team
+- Ask user to select project
+
+**Step 2: Create the issue**
+Use `mcp__linear__create_issue` with:
+- `title`: "[Brief description]"
+- `description`: Formatted bug report from Step 3 (Linear auto-links URLs, commits, other issues)
+- `teamId`: Selected team ID
+- `projectId`: Selected project ID (optional)
+- `priority`: 1 (High priority for bugs)
+
+**Linear Magic Links in Bug Report:**
+- Any GitHub PR/commit URLs in description become clickable with rich previews
+- Stack trace SHAs auto-link to commits if they exist
+- References to other Linear issues (e.g., `ENG-456`) auto-link
+- All URLs automatically become clickable links
+
+**Step 3: Capture issue ID**
+Display the Linear issue identifier (e.g., `ENG-123`) and URL
+
+## Step 6: Confirm Submission
 
 After the issue is created:
 1. Display the issue URL to the user
 2. Thank them for reporting the bug
-3. Let them know the maintainer (Kieran Klaassen) will be notified
+3. For plugin bugs: Let them know the maintainer (Kieran Klaassen) will be notified
+4. For Linear issues: Confirm the issue was created in their team's tracker
 
 ## Output Format
 
+**For GitHub:**
 ```
 ✅ Bug report submitted successfully!
 
@@ -133,9 +167,21 @@ Thank you for helping improve the compound-engineering plugin!
 The maintainer will review your report and respond as soon as possible.
 ```
 
+**For Linear:**
+```
+✅ Bug report submitted successfully!
+
+Issue: ENG-123
+URL: https://linear.app/team/issue/ENG-123
+Title: [Brief description]
+
+The issue has been created in your Linear workspace.
+```
+
 ## Error Handling
 
-- If `gh` CLI is not authenticated: Prompt user to run `gh auth login` first
+- **GitHub:** If `gh` CLI is not authenticated: Prompt user to run `gh auth login` first
+- **Linear:** If Linear MCP is not authenticated: Prompt user to run `/mcp` command to authenticate
 - If issue creation fails: Display the formatted report so user can manually create the issue
 - If required information is missing: Re-prompt for that specific field
 

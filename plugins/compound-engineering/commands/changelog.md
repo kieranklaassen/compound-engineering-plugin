@@ -20,13 +20,29 @@ Analyze the provided GitHub changes and related issues. Look for:
 1. New features that have been added
 2. Bug fixes that have been implemented
 3. Any other significant changes or improvements
-4. References to specific issues and their details
+4. References to specific issues and their details (GitHub or Linear)
 5. Names of contributors who made the changes
 6. Use gh cli to lookup the PRs as well and the description of the PRs
 7. Check PR labels to identify feature type (feature, bug, chore, etc.)
 8. Look for breaking changes and highlight them prominently
 9. Include PR numbers for traceability
 10. Check if PRs are linked to issues and include issue context
+
+### Linear Issue Integration
+
+For PRs that reference Linear issues (e.g., "Closes ENG-123" or branch names like `feat/ENG-123-description`):
+
+1. Extract Linear issue IDs from:
+   - PR title: `feat(ENG-123): description`
+   - PR body: `Closes ENG-123` or `Fixes ENG-123`
+   - Branch name: `feat/ENG-123-feature-name`
+2. Use `mcp__linear__get_issue` to fetch issue details:
+   - Issue title and description for additional context
+   - Priority level to help categorize changes
+   - Project association for better organization
+3. Include Linear issue context in changelog entries:
+   - Format: `feat: Add authentication (ENG-123, #456)`
+   - Where ENG-123 is the Linear issue and #456 is the GitHub PR
 
 ## Content Priorities
 

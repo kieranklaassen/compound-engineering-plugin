@@ -48,8 +48,9 @@ Estimated Effort: [Small (< 2 hours) / Medium (2-8 hours) / Large (> 8 hours)]
 ---
 Do you want to add this to the todo list?
 1. yes - create todo file
-2. next - skip this item
-3. custom - modify before creating
+2. yes + Linear - create todo file and Linear issue
+3. next - skip this item
+4. custom - modify before creating
 ```
 
 ### Step 2: Handle User Decision
@@ -145,6 +146,32 @@ Do you want to add this to the todo list?
    ```
 
 4. **Confirm approval:** "✅ Approved: `{new_filename}` (Issue #{issue_id}) - Status: **ready** → Ready to work on"
+
+**When user says "yes + Linear":**
+
+1. Follow all steps from "yes" option above to create/update the todo file
+
+2. **Create Linear issue:**
+   - Use `mcp__linear__get_teams` to get available teams
+   - Check user's CLAUDE.md for `linear_team` preference
+   - Use `mcp__linear__create_issue` with:
+     - `title`: `[P1/P2/P3] {Brief description}`
+     - `description`: Formatted markdown with Problem Statement, Findings, and Proposed Solutions
+     - `teamId`: Selected team ID
+     - `priority`: Map priority (P1=1, P2=2, P3=3)
+     - `labels`: Category tags (e.g., ["security", "code-review"])
+
+   **Linear Magic Links:**
+   - Include file paths with line numbers (e.g., `app/controllers/file.rb:123`)
+   - Include related issue IDs (e.g., "Related to ENG-456") - Linear auto-links
+   - Include any relevant commit SHAs - Linear auto-links to GitHub
+   - All URLs automatically become clickable with rich previews
+
+3. **Link todo to Linear issue:**
+   - Add `linear_issue: "ENG-123"` to YAML frontmatter
+   - Add Linear issue URL to Resources section
+
+4. **Confirm approval:** "✅ Approved: `{new_filename}` (Issue #{issue_id}) - Status: **ready** | Linear: ENG-123 → Ready to work on"
 
 **When user says "next":**
 
@@ -255,8 +282,9 @@ Estimated Effort: Small (30 minutes)
 Do you want to add this to the todo list?
 
 1. yes - create todo file
-2. next - skip this item
-3. custom - modify before creating
+2. yes + Linear - create todo file and Linear issue
+3. next - skip this item
+4. custom - modify before creating
 
 ```
 

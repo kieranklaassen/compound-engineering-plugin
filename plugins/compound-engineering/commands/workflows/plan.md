@@ -410,10 +410,35 @@ When user selects "Create Issue", detect their project tracker from CLAUDE.md:
    ```
 
 3. **If Linear:**
-   ```bash
-   # Use linear CLI if available, or provide instructions
-   # linear issue create --title "[Plan Title]" --description "$(cat plans/<issue_title>.md)"
-   ```
+
+   **Step 1: Get team/project context**
+   - Use `mcp__linear__get_teams` to list available teams
+   - If user has `linear_team: TEAM_KEY` in CLAUDE.md, use that team
+   - Use `mcp__linear__get_projects` to list projects for selected team
+   - Ask user to select project (or "None" for backlog)
+
+   **Step 2: Create the issue**
+   Use `mcp__linear__create_issue` with:
+   - `title`: Issue title from plan
+   - `description`: Full plan content as markdown (Linear auto-links URLs, other issues)
+   - `teamId`: Selected team ID
+   - `projectId`: Selected project ID (optional)
+   - `priority`: Map from plan priority if present (P1=1, P2=2, P3=3, P4=4)
+
+   **Linear Magic Links in Description:**
+   - URLs automatically become clickable links
+   - GitHub PR URLs show rich previews
+   - Other Linear issue IDs (e.g., `ENG-456`) auto-link
+   - Commit SHAs auto-link to GitHub commits
+
+   **Step 3: Capture issue ID**
+   The response contains the issue identifier (e.g., `ENG-123`).
+   Store this for use in branch naming.
+
+   **Step 4: Display result**
+   Show: "Created Linear issue ENG-123: [title]"
+   Show issue URL for user to view
+   Offer to proceed to `/workflows:work ENG-123` with issue ID
 
 4. **If no tracker configured:**
    Ask user: "Which project tracker do you use? (GitHub/Linear/Other)"

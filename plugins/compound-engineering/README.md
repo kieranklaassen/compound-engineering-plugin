@@ -9,7 +9,7 @@ AI-powered development tools that get smarter with every use. Make each unit of 
 | Agents | 27 |
 | Commands | 19 |
 | Skills | 13 |
-| MCP Servers | 2 |
+| MCP Servers | 3 |
 
 ## Agents
 
@@ -148,6 +148,7 @@ Core workflow commands use `workflows:` prefix to avoid collisions with built-in
 |--------|-------------|
 | `playwright` | Browser automation via `@playwright/mcp` |
 | `context7` | Framework documentation lookup via Context7 |
+| `linear` | Official Linear MCP server for project management |
 
 ### Playwright
 
@@ -167,6 +168,44 @@ Core workflow commands use `workflows:` prefix to avoid collisions with built-in
 
 Supports 100+ frameworks including Rails, React, Next.js, Vue, Django, Laravel, and more.
 
+### Linear
+
+**Tools provided:**
+- Finding, creating, and updating Linear issues
+- Managing projects and teams
+- Creating comments and updates
+- OAuth authenticated via browser flow
+
+**Setup:**
+Run `/mcp` once to authenticate via browser OAuth flow. Credentials are stored in `~/.mcp-auth`.
+
+**Integration:**
+- `/workflows:plan` creates Linear issues
+- `/workflows:work` includes issue IDs in branches and commits
+- `/report-bug` creates Linear issues for bug reports
+
+**Linear Magic Links (Auto-Linking):**
+
+Linear automatically creates bidirectional links between issues, commits, PRs, and branches:
+
+| Source | Pattern | Result |
+|--------|---------|--------|
+| **Branch name** | `feat/ENG-123-description` | Auto-links branch → issue |
+| **Commit message** | `feat(ENG-123): description`<br>`Closes ENG-123` | Auto-links commit → issue<br>Marks issue done when merged |
+| **PR description** | `Closes ENG-123`<br>`Fixes ENG-123`<br>`Resolves ENG-123` | Auto-links PR → issue<br>Closes issue when PR merged |
+| **Issue description** | GitHub PR URL | Shows rich PR preview |
+| **Issue description** | Other issue IDs (e.g., `ENG-456`) | Auto-links between issues |
+| **Issue comments** | GitHub PR/commit URLs | Auto-links with previews |
+
+**Supported Keywords:** `Closes`, `Fixes`, `Resolves` (case-insensitive, can reference multiple issues)
+
+**Example Workflow:**
+1. Create issue: `ENG-123`
+2. Create branch: `feat/ENG-123-add-auth` (auto-linked)
+3. Commit: `feat(ENG-123): implement login` + `Closes ENG-123` (auto-linked)
+4. Create PR with `Closes ENG-123` in body (auto-linked)
+5. Merge PR → Linear automatically marks `ENG-123` as Done ✅
+
 MCP servers start automatically when the plugin is enabled.
 
 ## Installation
@@ -179,7 +218,7 @@ claude /plugin install compound-engineering
 
 ### MCP Servers Not Auto-Loading
 
-**Issue:** The bundled MCP servers (Playwright and Context7) may not load automatically when the plugin is installed.
+**Issue:** The bundled MCP servers (Playwright, Context7, and Linear) may not load automatically when the plugin is installed.
 
 **Workaround:** Manually add them to your project's `.claude/settings.json`:
 
@@ -195,12 +234,19 @@ claude /plugin install compound-engineering
     "context7": {
       "type": "http",
       "url": "https://mcp.context7.com/mcp"
+    },
+    "linear": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.linear.app/mcp"]
     }
   }
 }
 ```
 
 Or add them globally in `~/.claude/settings.json` for all projects.
+
+**Linear Setup:** After adding, run `/mcp` to authenticate via browser OAuth.
 
 ## Version History
 

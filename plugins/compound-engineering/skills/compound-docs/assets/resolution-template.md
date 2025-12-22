@@ -11,6 +11,7 @@ rails_version: [7.1.2 - optional]
 resolution_type: [code_fix|migration|config_change|test_fix|dependency_update|environment_setup]
 severity: [critical|high|medium|low]
 tags: [keyword1, keyword2, keyword3]
+linear_issue: [ENG-123 - optional, if tracked in Linear]
 ---
 
 # Troubleshooting: [Clear Problem Title]

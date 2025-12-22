@@ -85,10 +85,22 @@ Creates a new worktree with the given branch name.
 - `branch-name` (required): The name for the new branch and worktree
 - `from-branch` (optional): Base branch to create from (defaults to `main`)
 
-**Example:**
+**Examples:**
 ```bash
+# Basic feature branch
 bash ${CLAUDE_PLUGIN_ROOT}/skills/git-worktree/scripts/worktree-manager.sh create feature-login
+
+# With Linear issue ID (recommended)
+bash ${CLAUDE_PLUGIN_ROOT}/skills/git-worktree/scripts/worktree-manager.sh create feat/ENG-123-user-authentication
+
+# Bug fix with Linear ID
+bash ${CLAUDE_PLUGIN_ROOT}/skills/git-worktree/scripts/worktree-manager.sh create fix/ENG-456-login-timeout
 ```
+
+**Branch naming with Linear issues:**
+- `feat/ENG-123-feature-name` - Feature work linked to Linear issue
+- `fix/ENG-456-bug-description` - Bug fix linked to Linear issue
+- `refactor/ENG-789-component-name` - Refactor linked to Linear issue
 
 **What happens:**
 1. Checks if worktree already exists

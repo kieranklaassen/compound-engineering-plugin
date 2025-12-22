@@ -16,6 +16,22 @@ This command takes a work document (plan, specification, or todo file) and execu
 
 <input_document> #$ARGUMENTS </input_document>
 
+## Extract Linear Issue ID
+
+<thinking>
+Check if the input includes a Linear issue ID (format: XXX-NNN where XXX is team prefix like ENG, TEAM, etc.).
+Also check if there's a current Linear context from a previous /workflows:plan command.
+</thinking>
+
+**Issue ID Detection:**
+1. Check if argument matches Linear ID pattern (e.g., `ENG-123`, `TEAM-456`)
+2. If plan file provided, check for issue reference in frontmatter or content
+3. If no issue ID found, ask user:
+   - "Is this work related to a Linear issue? Enter issue ID (e.g., ENG-123) or 'no'"
+   - If ID provided, verify with `mcp__linear__get_issue` tool
+
+Store as: `$LINEAR_ISSUE_ID` (e.g., "ENG-123") or empty if none
+
 ## Execution Workflow
 
 ### Phase 1: Quick Start
@@ -35,7 +51,17 @@ This command takes a work document (plan, specification, or todo file) and execu
    **Option A: Live work on current branch**
    ```bash
    git checkout main && git pull origin main
-   git checkout -b feature-branch-name
+
+   # Branch naming with Linear issue ID (triggers Linear auto-detection)
+   # Linear auto-detects issue IDs in branch names and creates links
+   # Format: type/ISSUE-ID-description
+   # If LINEAR_ISSUE_ID exists: feat/ENG-123-feature-description
+   # If no issue: feature-description
+   # Examples:
+   #   feat/ENG-123-add-user-authentication  (Linear auto-links to ENG-123)
+   #   fix/ENG-456-fix-login-error           (Linear auto-links to ENG-456)
+   #   refactor/ENG-789-extract-service      (Linear auto-links to ENG-789)
+   git checkout -b feat/${LINEAR_ISSUE_ID:+$LINEAR_ISSUE_ID-}feature-description
    ```
 
    **Option B: Parallel work with worktree (recommended for parallel development)**
@@ -43,6 +69,7 @@ This command takes a work document (plan, specification, or todo file) and execu
    # Ask user first: "Work in parallel with worktree or on current branch?"
    # If worktree:
    skill: git-worktree
+   # Pass branch name with Linear ID: feat/ENG-123-feature-description
    # The skill will create a new branch from main in an isolated worktree
    ```
 
@@ -159,11 +186,19 @@ This command takes a work document (plan, specification, or todo file) and execu
    git status  # Review what's being committed
    git diff --staged  # Check the changes
 
-   # Commit with conventional format
+   # Commit with conventional format and Linear issue ID
+   # Format: type(LINEAR-ID): description
+   # If LINEAR_ISSUE_ID is set, use it in the scope
+   # Examples:
+   #   feat(ENG-123): add user authentication flow
+   #   fix(ENG-456): resolve login timeout issue
    git commit -m "$(cat <<'EOF'
-   feat(scope): description of what and why
+   feat(ENG-123): description of what and why
 
-   Brief explanation if needed.
+   - Bullet points of changes
+   - Key decisions made
+
+   Closes ENG-123
 
    🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -171,6 +206,18 @@ This command takes a work document (plan, specification, or todo file) and execu
    EOF
    )"
    ```
+
+   **Commit Message Format (Linear Magic Links):**
+   - With Linear issue: `feat(ENG-123): description`
+   - Footer **MUST** include: `Closes ENG-123` or `Fixes ENG-123`
+   - Linear auto-detects and creates bidirectional link (commit ↔ issue)
+   - Type prefix: feat, fix, refactor, docs, test, chore
+
+   **Linear Auto-Linking Keywords:**
+   - `Closes ENG-123` - Marks issue as done when merged
+   - `Fixes ENG-123` - Alternative to Closes
+   - `Resolves ENG-123` - Alternative to Closes
+   - Can reference multiple: `Closes ENG-123, ENG-456`
 
 2. **Capture and Upload Screenshots for UI Changes** (REQUIRED for any UI work)
 
@@ -205,13 +252,22 @@ This command takes a work document (plan, specification, or todo file) and execu
 3. **Create Pull Request**
 
    ```bash
-   git push -u origin feature-branch-name
+   # Push with Linear-issue-formatted branch name
+   git push -u origin feat/ENG-123-feature-description
 
-   gh pr create --title "Feature: [Description]" --body "$(cat <<'EOF'
+   # Create PR with Linear issue reference (triggers Linear magic links)
+   gh pr create --title "feat(ENG-123): [Description]" --body "$(cat <<'EOF'
    ## Summary
    - What was built
    - Why it was needed
    - Key decisions made
+
+   ## Linear Issue
+   Closes ENG-123
+
+   <!-- Linear Magic Links: Auto-creates bidirectional link (PR ↔ Issue) -->
+   <!-- When PR is merged, Linear automatically marks issue as Done -->
+   <!-- Linear detects: Closes, Fixes, Resolves keywords -->
 
    ## Testing
    - Tests added/modified
@@ -228,6 +284,14 @@ This command takes a work document (plan, specification, or todo file) and execu
    🤖 Generated with [Claude Code](https://claude.com/claude-code)
    EOF
    )"
+   ```
+
+   **After PR Creation (Optional):**
+
+   Update Linear issue status and add PR link:
+   ```bash
+   # Use mcp__linear__update_issue to set state to "In Review"
+   # Use mcp__linear__create_comment to add PR URL to the issue
    ```
 
 4. **Notify User**

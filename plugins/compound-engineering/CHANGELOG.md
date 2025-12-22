@@ -5,6 +5,43 @@ All notable changes to the compound-engineering plugin will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.17.0] - 2025-12-21
+
+### Added
+
+- **Linear MCP Server** - Official Linear integration via `mcp-remote` connecting to `https://mcp.linear.app/mcp`
+  - OAuth 2.1 authenticated (run `/mcp` once to authenticate via browser)
+  - Tools for finding, creating, and updating issues, projects, and comments
+  - Full project management capabilities
+
+### Changed
+
+- **`/workflows:plan` command** - Now creates Linear issues using MCP tools instead of CLI placeholder. Supports team/project selection and priority mapping.
+
+- **`/workflows:work` command** - Enhanced with Linear issue ID integration:
+  - Detects Linear issue IDs from arguments (e.g., `ENG-123`)
+  - Branch naming format: `feat/ENG-123-description`
+  - Commit format: `feat(ENG-123): description` with `Closes ENG-123` footer
+  - PR body includes Linear issue reference for auto-linking
+
+- **`/report-bug` command** - Now supports creating Linear issues in addition to GitHub issues. Detects project tracker preference from CLAUDE.md.
+
+- **`/changelog` command** - Enhanced to extract and display Linear issue context from PR titles, bodies, and branch names. Includes Linear issue IDs alongside GitHub PR numbers.
+
+- **`/reproduce-bug` command** - Now accepts Linear issue IDs (e.g., `ENG-123`) in addition to GitHub issue numbers. Fetches issue details via Linear MCP and adds findings as comments.
+
+- **`/workflows:review` command** - Added option to create Linear issues for code review findings instead of or in addition to local todo files. Checks `project_tracker` setting in CLAUDE.md.
+
+- **`file-todos` skill** - Added optional `linear_issue` field to YAML frontmatter for linking todos to Linear issues. Supports bidirectional referencing.
+
+- **`compound-docs` skill** - Added optional `linear_issue` field to resolution template for tracking which Linear issue a documented solution resolves.
+
+- **`git-worktree` skill** - Updated examples to show Linear issue ID branch naming patterns (`feat/ENG-123-feature-name`).
+
+- **README.md** - Updated MCP server count (2→3), added Linear MCP server documentation section, updated manual configuration workaround.
+
+- **Plugin description** - Updated from "2 MCP servers" to "3 MCP servers" across plugin.json and marketplace.json.
+
 ## [2.16.0] - 2025-12-21
 
 ### Enhanced

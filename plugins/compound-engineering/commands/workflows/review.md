@@ -214,9 +214,16 @@ Remove duplicates, prioritize by severity and impact.
 
 </synthesis_tasks>
 
-#### Step 2: Create Todo Files Using file-todos Skill
+#### Step 2: Create Todo Files or Linear Issues
 
 <critical_instruction> Use the file-todos skill to create todo files for ALL findings immediately. Do NOT present findings one-by-one asking for user approval. Create all todo files in parallel using the skill, then summarize results to user. </critical_instruction>
+
+**Issue Tracker Selection:**
+
+Check user's CLAUDE.md for `project_tracker` setting:
+- If `project_tracker: linear` → Create Linear issues for findings
+- If `project_tracker: github` or not set → Create local todo files (default)
+- Ask user: "Create Linear issues for findings or use local todos?"
 
 **Implementation Options:**
 
@@ -293,6 +300,44 @@ Sub-agents can:
    ```
 
 5. Follow template structure from file-todos skill: `.claude/skills/file-todos/assets/todo-template.md`
+
+**Option C: Linear Issues (For Linear Users)**
+
+Create Linear issues for each finding in parallel:
+
+1. Get team context:
+   - Use `mcp__linear__get_teams` to list teams
+   - Check user's CLAUDE.md for `linear_team` preference
+   - Select appropriate team
+
+2. For each finding, create Linear issue:
+   ```bash
+   mcp__linear__create_issue({
+     title: "[P1] Path traversal vulnerability in file upload",
+     description: "## Problem Statement\n[Details]\n\n## Findings\n- File: app/controllers/uploads.rb:45\n- Related to ENG-456\n\n## Evidence\n[Stack traces, commit SHAs]...",
+     teamId: "selected-team-id",
+     priority: 1,  // P1=1, P2=2, P3=3, P4=4
+     labels: ["code-review", "security"]
+   })
+   ```
+
+   **Linear Magic Links:**
+   - File paths with line numbers (e.g., `app/controllers/uploads.rb:45`) are clickable
+   - Related issue IDs (e.g., "Related to ENG-456") auto-link between issues
+   - Commit SHAs in stack traces auto-link to GitHub commits
+   - GitHub PR/commit URLs show rich previews
+   - All URLs automatically become clickable links
+
+3. Track created issue IDs (e.g., `ENG-123`, `ENG-124`)
+
+4. Optionally create local todo files with `linear_issue` reference:
+   ```yaml
+   ---
+   status: pending
+   priority: p1
+   linear_issue: "ENG-123"
+   ---
+   ```
 
 **Todo File Structure (from template):**
 
