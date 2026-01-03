@@ -8,7 +8,7 @@ argument-hint: "[feature description, bug report, or improvement idea]"
 
 ## Introduction
 
-**Note: The current year is 2025.** Use this when dating plans and searching for recent documentation.
+**Note: The current year is 2026.** Use this when dating plans and searching for recent documentation.
 
 Transform feature descriptions, bug reports, or improvement ideas into well-structured markdown files issues that follow project conventions and best practices. This command provides flexible detail levels to match your needs.
 
@@ -120,6 +120,7 @@ end
 
 - Related issue: #[issue_number]
 - Documentation: [relevant_docs_url]
+````
 
 #### 📋 MORE (Standard Issue)
 
@@ -322,9 +323,9 @@ Apply best practices for clarity and actionability, making the issue easy to sca
 
 **Code & Examples:**
 
-```markdown
+````markdown
 # Good example with syntax highlighting and line references
-```
+
 
 ```ruby
 # app/services/user_service.rb:42
@@ -334,7 +335,6 @@ def process_user(user)
 
 end
 ```
-````
 
 # Collapsible error logs
 
@@ -344,6 +344,7 @@ end
 `Error details here...`
 
 </details>
+````
 
 **AI-Era Considerations:**
 
