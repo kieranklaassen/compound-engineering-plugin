@@ -69,8 +69,7 @@ What aspect of agent native architecture do you need help with?
 7. **Action parity** - Ensure agents can do everything users can do
 8. **Shared workspace** - Set up agents and users in the same data space
 9. **Testing** - Test agent-native apps for capability and parity
-10. **Mobile patterns** - Handle background execution, permissions, cost
-11. **API integration** - Connect to external APIs (HealthKit, HomeKit, GraphQL)
+10. **API integration** - Connect to external APIs (HealthKit, HomeKit, GraphQL)
 
 **Wait for response before proceeding.**
 </intake>
@@ -87,8 +86,7 @@ What aspect of agent native architecture do you need help with?
 | 7, "parity", "ui action", "capability map" | Read [action-parity-discipline.md](./references/action-parity-discipline.md) |
 | 8, "workspace", "shared", "files", "filesystem" | Read [shared-workspace-architecture.md](./references/shared-workspace-architecture.md) |
 | 9, "test", "testing", "verify", "validate" | Read [agent-native-testing.md](./references/agent-native-testing.md) |
-| 10, "mobile", "ios", "android", "background" | Read [mobile-patterns.md](./references/mobile-patterns.md) |
-| 11, "api", "healthkit", "homekit", "graphql", "external" | Read [mcp-tool-design.md](./references/mcp-tool-design.md) (Dynamic Capability Discovery section) |
+| 10, "api", "healthkit", "homekit", "graphql", "external" | Read [mcp-tool-design.md](./references/mcp-tool-design.md) (Dynamic Capability Discovery section) |
 
 **After reading the reference, apply those patterns to the user's specific context.**
 </routing>
@@ -118,11 +116,6 @@ When designing an agent-native system, verify these **before implementation**:
 - [ ] **Available Resources:** System prompt includes what exists (files, data, types)
 - [ ] **Available Capabilities:** System prompt documents what agent can do with user vocabulary
 - [ ] **Dynamic Context:** Context refreshes for long sessions (or provide `refresh_context` tool)
-
-### Mobile (if applicable)
-- [ ] **Background Execution:** Checkpoint/resume pattern for iOS app suspension
-- [ ] **Permissions:** Just-in-time permission requests in tools
-- [ ] **Cost Awareness:** Model tier selection (Haiku/Sonnet/Opus)
 
 **When designing architecture, explicitly address each checkbox in your plan.**
 </architecture_checklist>
@@ -181,7 +174,6 @@ All references in `references/`:
 - **Action Parity:** [action-parity-discipline.md](./references/action-parity-discipline.md)
 - **Shared Workspace:** [shared-workspace-architecture.md](./references/shared-workspace-architecture.md)
 - **Testing:** [agent-native-testing.md](./references/agent-native-testing.md)
-- **Mobile Patterns:** [mobile-patterns.md](./references/mobile-patterns.md)
 </reference_index>
 
 <anti_patterns>
@@ -337,9 +329,4 @@ You've built a prompt-native agent when:
 - [ ] The "write something to [app location]" test passes for all locations
 - [ ] Users can discover what the agent can do (capability hints, onboarding)
 - [ ] Context refreshes for long sessions (or `refresh_context` tool exists)
-
-**Mobile-Specific Criteria (if applicable):**
-- [ ] Background execution handling implemented (checkpoint/resume)
-- [ ] Permission requests handled gracefully in tools
-- [ ] Cost-aware design (appropriate model tiers, batching)
 </success_criteria>

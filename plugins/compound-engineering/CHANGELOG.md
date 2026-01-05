@@ -5,6 +5,17 @@ All notable changes to the compound-engineering plugin will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.21.0] - 2026-01-05
+
+### Removed
+
+- **`/xcode-test` command** - Removed iOS simulator testing command
+- **`mobile-patterns.md` reference** - Removed iOS/Swift mobile patterns from agent-native-architecture skill
+
+This release removes all iOS-specific implementations to focus on web development workflows.
+
+---
+
 ## [2.20.0] - 2026-01-01
 
 ### Changed
