@@ -1,13 +1,32 @@
 ---
 name: dhh-rails-style
 description: This skill should be used when writing Ruby and Rails code in DHH's distinctive 37signals style. It applies when writing Ruby code, Rails applications, creating models, controllers, or any Ruby file. Triggers on Ruby/Rails code generation, refactoring requests, code review, or when the user mentions DHH, 37signals, Basecamp, HEY, or Campfire style. Embodies REST purity, fat models, thin controllers, Current attributes, Hotwire patterns, and the "clarity over cleverness" philosophy.
+license: MIT
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+metadata:
+  version: "1.1.0"
+  category: rails
+  tags: [ruby, rails, dhh, 37signals, basecamp, conventions]
 ---
 
-<objective>
-Apply 37signals/DHH Rails conventions to Ruby and Rails code. This skill provides comprehensive domain expertise extracted from analyzing production 37signals codebases (Fizzy/Campfire) and DHH's code review patterns.
-</objective>
+# DHH Rails Style
 
-<essential_principles>
+## Contents
+
+- [Core Philosophy](#core-philosophy)
+- [Intake Menu](#intake-menu)
+- [Quick Reference](#quick-reference)
+- [References](#references)
+- [Code Review Checklist](#code-review-checklist)
+- [Credits](#credits)
+
+## Objective
+
+Apply 37signals/DHH Rails conventions to Ruby and Rails code. This skill provides comprehensive domain expertise extracted from analyzing production 37signals codebases (Fizzy/Campfire) and DHH's code review patterns.
+
 ## Core Philosophy
 
 "The best code is the code you don't write. The second best is the code that's obviously correct."
@@ -36,9 +55,9 @@ Apply 37signals/DHH Rails conventions to Ruby and Rails code. This skill provide
 - Fix root causes, not symptoms
 - Write-time operations over read-time computations
 - Database constraints over ActiveRecord validations
-</essential_principles>
 
-<intake>
+## Intake Menu
+
 What are you working on?
 
 1. **Controllers** - REST mapping, concerns, Turbo responses, API patterns
@@ -51,9 +70,8 @@ What are you working on?
 8. **General Guidance** - Philosophy and conventions
 
 **Specify a number or describe your task.**
-</intake>
 
-<routing>
+### Routing
 | Response | Reference to Read |
 |----------|-------------------|
 | 1, "controller" | [controllers.md](./references/controllers.md) |
@@ -66,10 +84,10 @@ What are you working on?
 | 8, general task | Read relevant references based on context |
 
 **After reading relevant references, apply patterns to the user's code.**
-</routing>
 
-<quick_reference>
-## Naming Conventions
+## Quick Reference
+
+### Naming Conventions
 
 **Verbs:** `card.close`, `card.gild`, `board.publish` (not `set_style` methods)
 
@@ -143,10 +161,10 @@ class User < ApplicationRecord
   end
 end
 ```
-</quick_reference>
 
-<reference_index>
-## Domain Knowledge
+## References
+
+### Domain Knowledge
 
 All detailed patterns in `references/`:
 
@@ -158,27 +176,28 @@ All detailed patterns in `references/`:
 | [architecture.md](./references/architecture.md) | Routing, authentication, jobs, Current attributes, caching, database patterns |
 | [testing.md](./references/testing.md) | Minitest, fixtures, unit/integration/system tests, testing patterns |
 | [gems.md](./references/gems.md) | What they use vs avoid, decision framework, Gemfile examples |
-</reference_index>
 
-<success_criteria>
-Code follows DHH style when:
-- Controllers map to CRUD verbs on resources
-- Models use concerns for horizontal behavior
-- State is tracked via records, not booleans
-- No unnecessary service objects or abstractions
-- Database-backed solutions preferred over external services
-- Tests use Minitest with fixtures
-- Turbo/Stimulus for interactivity (no heavy JS frameworks)
-- Native CSS with modern features (layers, OKLCH, nesting)
-- Authorization logic lives on User model
-- Jobs are shallow wrappers calling model methods
-</success_criteria>
+## Code Review Checklist
 
-<credits>
+Copy this checklist when reviewing code:
+
+```
+- [ ] Controllers map to CRUD verbs on resources
+- [ ] Models use concerns for horizontal behavior
+- [ ] State is tracked via records, not booleans
+- [ ] No unnecessary service objects or abstractions
+- [ ] Database-backed solutions preferred over external services
+- [ ] Tests use Minitest with fixtures
+- [ ] Turbo/Stimulus for interactivity (no heavy JS frameworks)
+- [ ] Native CSS with modern features (layers, OKLCH, nesting)
+- [ ] Authorization logic lives on User model
+- [ ] Jobs are shallow wrappers calling model methods
+```
+
+## Credits
 Based on [The Unofficial 37signals/DHH Rails Style Guide](https://github.com/marckohlbrugge/unofficial-37signals-coding-style-guide) by [Marc Köhlbrugge](https://x.com/marckohlbrugge), generated through deep analysis of 265 pull requests from the Fizzy codebase.
 
 **Important Disclaimers:**
 - LLM-generated guide - may contain inaccuracies
 - Code examples from Fizzy are licensed under the O'Saasy License
 - Not affiliated with or endorsed by 37signals
-</credits>
