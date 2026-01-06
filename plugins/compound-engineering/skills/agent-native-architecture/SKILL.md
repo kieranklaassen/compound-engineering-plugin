@@ -1,7 +1,29 @@
 ---
 name: agent-native-architecture
 description: This skill should be used when building AI agents using prompt-native architecture where features are defined in prompts, not code. Use it when creating autonomous agents, designing MCP servers, implementing self-modifying systems, or adopting the "trust the agent's intelligence" philosophy.
+license: MIT
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - WebFetch
+metadata:
+  version: "1.1.0"
+  category: architecture
+  tags: [agents, mcp, prompt-native, ai-architecture, self-modification]
 ---
+
+# Agent-Native Architecture
+
+## Contents
+
+- [The Prompt-Native Philosophy](#the-prompt-native-philosophy)
+- [Intake Menu](#intake-menu)
+- [Architecture Review Checklist](#architecture-review-checklist)
+- [Quick Start](#quick-start)
+- [References](#references)
+- [What NOT to Do](#what-not-to-do)
+- [Success Criteria](#success-criteria)
 
 <essential_principles>
 ## The Prompt-Native Philosophy
@@ -189,7 +211,7 @@ All references in `references/`:
 
 **THE CARDINAL SIN: Agent executes your code instead of figuring things out**
 
-This is the most common mistake. You fall back into writing workflow code and having the agent call it, instead of defining outcomes and letting the agent figure out HOW.
+This is the most common mistake. The pattern is falling back into writing workflow code and having the agent call it, instead of defining outcomes and letting the agent figure out HOW.
 
 ```typescript
 // WRONG - You wrote the workflow, agent just executes it

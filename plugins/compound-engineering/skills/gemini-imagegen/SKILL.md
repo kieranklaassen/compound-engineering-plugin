@@ -1,26 +1,63 @@
 ---
 name: gemini-imagegen
-description: This skill should be used when generating and editing images using the Gemini API (Nano Banana Pro). It applies when creating images from text prompts, editing existing images, applying style transfers, generating logos with text, creating stickers, product mockups, or any image generation/manipulation task. Supports text-to-image, image editing, multi-turn refinement, and composition from multiple reference images.
+description: This skill should be used when generating or editing images with the Gemini API. Triggers on "generate image", "create image with Gemini", "edit image", "image generation", "text-to-image", "style transfer", "multi-turn image refinement", or requests to use Google's Gemini for visual content creation.
+license: MIT
+allowed-tools:
+  - Bash
+  - Read
+  - Write
 ---
 
-# Gemini Image Generation (Nano Banana Pro)
+# Gemini Image Generation
 
-Generate and edit images using Google's Gemini API. The environment variable `GEMINI_API_KEY` must be set.
+Generate and edit images using Google's Gemini API.
 
-## Default Model
+## Contents
 
-| Model | Resolution | Best For |
-|-------|------------|----------|
-| `gemini-3-pro-image-preview` | 1K-4K | All image generation (default) |
+- [Environment Setup](#environment-setup)
+- [Ready-to-Use Scripts](#ready-to-use-scripts)
+- [Models](#models)
+- [Quick Reference](#quick-reference)
+- [Core API Pattern](#core-api-pattern)
+- [Prompting Best Practices](#prompting-best-practices)
+- [File Format Warning](#file-format-warning)
 
-**Note:** Always use this Pro model. Only use a different model if explicitly requested.
+## Environment Setup
+
+**Required:** Set `GEMINI_API_KEY` environment variable.
+
+**Dependencies:** Install from [requirements.txt](./requirements.txt):
+```bash
+pip install -r requirements.txt
+```
+
+## Ready-to-Use Scripts
+
+The following CLI scripts are available in [scripts/](./scripts/):
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| [generate_image.py](./scripts/generate_image.py) | Text-to-image generation | `python scripts/generate_image.py "prompt" output.jpg` |
+| [edit_image.py](./scripts/edit_image.py) | Edit existing images | `python scripts/edit_image.py input.jpg "edit instruction" output.jpg` |
+| [compose_images.py](./scripts/compose_images.py) | Combine multiple images | `python scripts/compose_images.py "instruction" out.jpg img1.jpg img2.jpg` |
+| [multi_turn_chat.py](./scripts/multi_turn_chat.py) | Interactive refinement | `python scripts/multi_turn_chat.py` |
+| [gemini_images.py](./scripts/gemini_images.py) | Python library | `from gemini_images import GeminiImageGenerator` |
+
+## Models
+
+| Model | Speed | Quality | Best For |
+|-------|-------|---------|----------|
+| `gemini-2.5-flash-image` | Fast | Good | Previews, iteration |
+| `gemini-3-pro-image-preview` | Slower | Best | Final outputs, 4K |
+
+**Default:** Scripts use flash for speed. Use `--model gemini-3-pro-image-preview` for production quality.
 
 ## Quick Reference
 
 ### Default Settings
-- **Model:** `gemini-3-pro-image-preview`
-- **Resolution:** 1K (default, options: 1K, 2K, 4K)
-- **Aspect Ratio:** 1:1 (default)
+- **Model:** `gemini-2.5-flash-image` (scripts) / `gemini-3-pro-image-preview` (pro)
+- **Resolution:** 1K (options: 1K, 2K, 4K)
+- **Aspect Ratio:** 1:1
 
 ### Available Aspect Ratios
 `1:1`, `2:3`, `3:2`, `3:4`, `4:3`, `4:5`, `5:4`, `9:16`, `16:9`, `21:9`
@@ -30,31 +67,18 @@ Generate and edit images using Google's Gemini API. The environment variable `GE
 
 ## Core API Pattern
 
+For complete implementations, see [generate_image.py](./scripts/generate_image.py).
+
+Quick inline example:
+
 ```python
-import os
-from google import genai
-from google.genai import types
+from gemini_images import GeminiImageGenerator
 
-client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-
-# Basic generation (1K, 1:1 - defaults)
-response = client.models.generate_content(
-    model="gemini-3-pro-image-preview",
-    contents=["Your prompt here"],
-    config=types.GenerateContentConfig(
-        response_modalities=['TEXT', 'IMAGE'],
-    ),
-)
-
-for part in response.parts:
-    if part.text:
-        print(part.text)
-    elif part.inline_data:
-        image = part.as_image()
-        image.save("output.png")
+gen = GeminiImageGenerator()
+gen.generate("A sunset over mountains", "sunset.jpg")
 ```
 
-## Custom Resolution & Aspect Ratio
+### Custom Resolution & Aspect Ratio
 
 ```python
 from google.genai import types
@@ -65,48 +89,16 @@ response = client.models.generate_content(
     config=types.GenerateContentConfig(
         response_modalities=['TEXT', 'IMAGE'],
         image_config=types.ImageConfig(
-            aspect_ratio="16:9",  # Wide format
-            image_size="2K"       # Higher resolution
+            aspect_ratio="16:9",
+            image_size="2K"
         ),
     )
 )
 ```
 
-### Resolution Examples
+### Editing Images
 
-```python
-# 1K (default) - Fast, good for previews
-image_config=types.ImageConfig(image_size="1K")
-
-# 2K - Balanced quality/speed
-image_config=types.ImageConfig(image_size="2K")
-
-# 4K - Maximum quality, slower
-image_config=types.ImageConfig(image_size="4K")
-```
-
-### Aspect Ratio Examples
-
-```python
-# Square (default)
-image_config=types.ImageConfig(aspect_ratio="1:1")
-
-# Landscape wide
-image_config=types.ImageConfig(aspect_ratio="16:9")
-
-# Ultra-wide panoramic
-image_config=types.ImageConfig(aspect_ratio="21:9")
-
-# Portrait
-image_config=types.ImageConfig(aspect_ratio="9:16")
-
-# Photo standard
-image_config=types.ImageConfig(aspect_ratio="4:3")
-```
-
-## Editing Images
-
-Pass existing images with text prompts:
+Use [edit_image.py](./scripts/edit_image.py) or:
 
 ```python
 from PIL import Image
@@ -115,29 +107,21 @@ img = Image.open("input.png")
 response = client.models.generate_content(
     model="gemini-3-pro-image-preview",
     contents=["Add a sunset to this scene", img],
-    config=types.GenerateContentConfig(
-        response_modalities=['TEXT', 'IMAGE'],
-    ),
+    config=types.GenerateContentConfig(response_modalities=['TEXT', 'IMAGE']),
 )
 ```
 
-## Multi-Turn Refinement
+### Multi-Turn Refinement
 
-Use chat for iterative editing:
+Use [multi_turn_chat.py](./scripts/multi_turn_chat.py) for interactive sessions or:
 
 ```python
-from google.genai import types
-
 chat = client.chats.create(
     model="gemini-3-pro-image-preview",
     config=types.GenerateContentConfig(response_modalities=['TEXT', 'IMAGE'])
 )
-
 response = chat.send_message("Create a logo for 'Acme Corp'")
-# Save first image...
-
 response = chat.send_message("Make the text bolder and add a blue gradient")
-# Save refined image...
 ```
 
 ## Prompting Best Practices
@@ -161,6 +145,7 @@ Describe lighting setup and surface:
 ## Advanced Features
 
 ### Google Search Grounding
+
 Generate images based on real-time data:
 
 ```python
@@ -174,64 +159,47 @@ response = client.models.generate_content(
 )
 ```
 
-### Multiple Reference Images (Up to 14)
-Combine elements from multiple sources:
+### Multiple Reference Images
+
+Use [compose_images.py](./scripts/compose_images.py) to combine up to 14 reference images.
+
+## File Format Warning
+
+**CRITICAL:** Gemini returns JPEG format by default. Always use `.jpg` extension:
 
 ```python
-response = client.models.generate_content(
-    model="gemini-3-pro-image-preview",
-    contents=[
-        "Create a group photo of these people in an office",
-        Image.open("person1.png"),
-        Image.open("person2.png"),
-        Image.open("person3.png"),
-    ],
-    config=types.GenerateContentConfig(
-        response_modalities=['TEXT', 'IMAGE'],
-    ),
-)
-```
-
-## Important: File Format & Media Type
-
-**CRITICAL:** The Gemini API returns images in JPEG format by default. When saving, always use `.jpg` extension to avoid media type mismatches.
-
-```python
-# CORRECT - Use .jpg extension (Gemini returns JPEG)
+# CORRECT
 image.save("output.jpg")
 
-# WRONG - Will cause "Image does not match media type" errors
-image.save("output.png")  # Creates JPEG with PNG extension!
+# WRONG - Creates JPEG with PNG extension!
+image.save("output.png")
 ```
 
-### Converting to PNG (if needed)
-
-If you specifically need PNG format:
+### Converting to PNG
 
 ```python
-from PIL import Image
-
-# Generate with Gemini
-for part in response.parts:
-    if part.inline_data:
-        img = part.as_image()
-        # Convert to PNG by saving with explicit format
-        img.save("output.png", format="PNG")
+img.save("output.png", format="PNG")
 ```
 
-### Verifying Image Format
-
-Check actual format vs extension with the `file` command:
+### Verify Format
 
 ```bash
-file image.png
-# If output shows "JPEG image data" - rename to .jpg!
+file image.png  # If shows "JPEG image data" - rename to .jpg
 ```
+
+## Quality Checklist
+
+Before delivering generated images:
+
+- [ ] GEMINI_API_KEY environment variable set
+- [ ] Correct model selected (flash for speed, pro for quality)
+- [ ] Prompt includes specific details (camera, lighting, style)
+- [ ] Output uses `.jpg` extension (Gemini returns JPEG)
+- [ ] Image verified with `file` command if format matters
 
 ## Notes
 
 - All generated images include SynthID watermarks
-- Gemini returns **JPEG format by default** - always use `.jpg` extension
-- Image-only mode (`responseModalities: ["IMAGE"]`) won't work with Google Search grounding
-- For editing, describe changes conversationally—the model understands semantic masking
+- Image-only mode won't work with Google Search grounding
+- For editing, describe changes conversationally
 - Default to 1K resolution for speed; use 2K/4K when quality is critical

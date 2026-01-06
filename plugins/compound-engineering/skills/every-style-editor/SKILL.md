@@ -1,62 +1,64 @@
 ---
 name: every-style-editor
-description: This skill should be used when reviewing or editing copy to ensure adherence to Every's style guide. It provides a systematic line-by-line review process for grammar, punctuation, mechanics, and style guide compliance.
+description: This skill should be used when reviewing or editing copy to ensure adherence to Every's style guide. Triggers on "edit for style", "review article", "check grammar", "Every style guide", "proofread", "copy edit", or requests to check written content for grammar, punctuation, mechanics, and style compliance.
+license: MIT
+allowed-tools:
+  - Read
+  - Edit
+  - Write
+metadata:
+  version: "1.1.0"
+  category: editing
+  tags: [style-guide, editing, copy, grammar, proofreading]
 ---
 
 # Every Style Editor
 
-This skill provides a systematic approach to reviewing copy against Every's comprehensive style guide. It transforms Claude into a meticulous line editor and proofreader specializing in grammar, mechanics, and style guide compliance.
+## Contents
 
-## When to Use This Skill
+- [Overview](#overview)
+- [4-Phase Review Process](#4-phase-review-process)
+- [Output Format](#output-format)
+- [Style Guide Quick Reference](#style-guide-quick-reference)
+- [Key Principles](#key-principles)
+- [References](#references)
 
-Use this skill when:
+## Overview
+
+This skill provides a systematic approach to reviewing copy against Every's comprehensive style guide. It transforms Claude into a meticulous line editor specializing in grammar, mechanics, and style guide compliance.
+
+**Use when:**
 - Reviewing articles, blog posts, newsletters, or any written content
 - Ensuring copy follows Every's specific style conventions
 - Providing feedback on grammar, punctuation, and mechanics
-- Flagging deviations from the Every style guide
 - Preparing clean copy for human editorial review
 
-## Skill Overview
+## 4-Phase Review Process
 
-This skill enables performing a comprehensive review of written content in four phases:
+| Phase | Focus | Actions |
+|-------|-------|---------|
+| 1. Initial Assessment | Context | Understand document type, audience, tone |
+| 2. Detailed Line Edit | Content | Check grammar, punctuation, word choice, style rules |
+| 3. Mechanical Review | Formatting | Verify spacing, formatting, numbers, links |
+| 4. Recommendations | Actionable | Provide improvement suggestions |
 
-1. **Initial Assessment** - Understanding context and document type
-2. **Detailed Line Edit** - Checking every sentence for compliance
-3. **Mechanical Review** - Verifying formatting and consistency
-4. **Recommendations** - Providing actionable improvement suggestions
+### Phase 2: Detailed Line Edit Checklist
 
-## How to Use This Skill
+- [ ] Sentence structure and grammar correctness
+- [ ] Punctuation usage (commas, semicolons, em dashes)
+- [ ] Capitalization rules (job titles, headlines)
+- [ ] Word choice (overused words, passive voice)
+- [ ] Adherence to [EVERY_WRITE_STYLE.md](./references/EVERY_WRITE_STYLE.md)
 
-### Step 1: Initial Assessment
+### Phase 3: Mechanical Review Checklist
 
-Begin by reading the entire piece to understand:
-- Document type (article, knowledge base entry, social post, etc.)
-- Target audience
-- Overall tone and voice
-- Content context
+- [ ] Spacing and formatting consistency
+- [ ] Style choices applied uniformly
+- [ ] Special elements (lists, quotes, citations)
+- [ ] Number formatting (numerals vs. spelled out)
+- [ ] Link formatting and descriptions
 
-### Step 2: Detailed Line Edit
-
-Review each paragraph systematically, checking for:
-- Sentence structure and grammar correctness
-- Punctuation usage (commas, semicolons, em dashes, etc.)
-- Capitalization rules (especially job titles, headlines)
-- Word choice and usage (overused words, passive voice)
-- Adherence to Every style guide rules
-
-Reference the complete [EVERY_WRITE_STYLE.md](./references/EVERY_WRITE_STYLE.md) for specific rules when in doubt.
-
-### Step 3: Mechanical Review
-
-Verify:
-- Spacing and formatting consistency
-- Style choices applied uniformly throughout
-- Special elements (lists, quotes, citations)
-- Proper use of italics and formatting
-- Number formatting (numerals vs. spelled out)
-- Link formatting and descriptions
-
-### Step 4: Output Results
+## Output Format
 
 Present findings using this structure:
 
@@ -72,63 +74,72 @@ ERRORS FOUND: [total number]
 DETAILED CORRECTIONS
 ===================
 
-[For each error found:]
-
 **Location**: [Paragraph #, Sentence #]
 **Issue Type**: [Grammar/Punctuation/Mechanics/Style Guide]
 **Original**: "[exact text with error]"
 **Correction**: "[corrected text]"
 **Rule Reference**: [Specific style guide rule violated]
-**Explanation**: [Brief explanation of why this is an error]
 
 ---
 
 RECURRING ISSUES
 ===============
-[List patterns of errors that appear multiple times]
+[Patterns of errors appearing multiple times]
 
 STYLE GUIDE COMPLIANCE CHECKLIST
 ==============================
 ✓ [Rule followed correctly]
-✗ [Rule violated - with count of violations]
+✗ [Rule violated - with count]
 
 FINAL RECOMMENDATIONS
 ===================
-[2-3 actionable suggestions for improving the draft]
+[2-3 actionable suggestions]
 ```
 
-## Style Guide Reference
+## Style Guide Quick Reference
 
-The complete Every style guide is included in [EVERY_WRITE_STYLE.md](./references/EVERY_WRITE_STYLE.md). Key areas to focus on:
+| Category | Rule |
+|----------|------|
+| Headlines | Title case for headlines, sentence case elsewhere |
+| Tone | Active voice, avoid overused words (actually, very, just) |
+| Numbers | Spell out one-nine; numerals for 10+ |
+| Punctuation | Oxford commas, em dashes without spaces |
+| Capitalization | Lowercase job titles, "it" for company, "they" for teams |
+| Emphasis | Italics only (no bold for emphasis) |
+| Links | 2-4 words, never "click here" |
 
-- **Quick Rules**: Title case for headlines, sentence case elsewhere
-- **Tone**: Active voice, avoid overused words (actually, very, just), be specific
-- **Numbers**: Spell out one through nine; use numerals for 10+
-- **Punctuation**: Oxford commas, em dashes without spaces, proper quotation mark usage
-- **Capitalization**: Lowercase job titles, company as singular (it), teams as plural (they)
-- **Emphasis**: Italics only (no bold for emphasis)
-- **Links**: 2-4 words, don't say "click here"
+**Full style guide:** [EVERY_WRITE_STYLE.md](./references/EVERY_WRITE_STYLE.md)
 
 ## Key Principles
 
-- **Be specific**: Always quote the exact text with the error
-- **Reference rules**: Cite the specific style guide rule for each correction
-- **Maintain voice**: Preserve the author's voice while correcting errors
-- **Prioritize clarity**: Focus on changes that improve readability
+- **Be specific**: Quote exact text with errors
+- **Reference rules**: Cite specific style guide rule for each correction
+- **Maintain voice**: Preserve author's voice while correcting
+- **Prioritize clarity**: Focus on changes improving readability
 - **Be constructive**: Frame feedback to help writers improve
-- **Flag ambiguous cases**: When style guide doesn't address an issue, explain options and recommend the clearest choice
 
-## Common Areas to Focus On
+## Common Focus Areas
 
-Based on Every's style guide, pay special attention to:
+Based on Every's style guide:
+- Punctuation (commas, semicolons, quotation marks)
+- Capitalization (proper nouns, titles)
+- Passive voice → active voice
+- Parallel structure in lists
+- Compound adjective hyphenation
+- Company singular ("it") vs. teams plural ("they")
 
-- Punctuation (comma usage, semicolons, apostrophes, quotation marks)
-- Capitalization (proper nouns, titles, sentence starts)
-- Numbers (when to spell out vs. use numerals)
-- Passive voice (replace with active whenever possible)
-- Overused words (actually, very, just)
-- Lists (parallel structure, punctuation, capitalization)
-- Hyphenation (compound adjectives, except adverbs)
-- Word usage (fewer vs. less, they vs. them)
-- Company references (singular "it", teams as plural "they")
-- Job title capitalization
+## Quality Checklist
+
+Before delivering edited copy:
+
+- [ ] 4-phase review process completed
+- [ ] All errors documented with specific rule references
+- [ ] Recurring issues identified and noted
+- [ ] Author's voice preserved in corrections
+- [ ] Actionable recommendations provided
+
+## References
+
+| File | Purpose |
+|------|---------|
+| [EVERY_WRITE_STYLE.md](./references/EVERY_WRITE_STYLE.md) | Complete Every style guide (29KB) |
