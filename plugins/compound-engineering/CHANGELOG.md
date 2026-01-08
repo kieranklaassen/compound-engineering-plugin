@@ -5,6 +5,28 @@ All notable changes to the compound-engineering plugin will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.23.0] - 2026-01-08
+
+### Added
+
+- **`kieran-code-quality` skill** - Extracted common code quality principles from all Kieran reviewers. This skill provides the foundation that language-specific reviewers build upon:
+  - Duplication > Complexity philosophy
+  - Strict on existing code, pragmatic on new code
+  - Testing as quality indicator
+  - 5-second naming rule
+  - Module extraction signals
+
+### Changed
+
+- **Kieran reviewers refactored** - All three language-specific reviewers now reference the `kieran-code-quality` skill:
+  - `kieran-rails-reviewer` - Now focused on Rails-specific conventions (Turbo Streams, namespacing, service extraction)
+  - `kieran-python-reviewer` - Now focused on Python-specific patterns (type hints, PEP 8, modern Python features)
+  - `kieran-typescript-reviewer` - Now focused on TypeScript-specific rules (type safety, React patterns, ES6+)
+
+  This reduces duplication and ensures consistency across all Kieran reviewers.
+
+---
+
 ## [2.22.0] - 2026-01-07
 
 ### Removed

@@ -6,9 +6,9 @@ AI-powered development tools that get smarter with every use. Make each unit of 
 
 | Component | Count |
 |-----------|-------|
-| Agents | 27 |
-| Commands | 19 |
-| Skills | 13 |
+| Agents | 26 |
+| Commands | 13 |
+| Skills | 12 |
 | MCP Servers | 2 |
 
 ## Agents
@@ -51,12 +51,11 @@ Agents are organized into categories for easier discovery.
 | `design-iterator` | Iteratively refine UI through systematic design iterations |
 | `figma-design-sync` | Synchronize web implementations with Figma designs |
 
-### Workflow (5)
+### Workflow (4)
 
 | Agent | Description |
 |-------|-------------|
 | `bug-reproduction-validator` | Systematically reproduce and validate bug reports |
-| `every-style-editor` | Edit content to conform to Every's style guide |
 | `lint` | Run linting and code quality checks on Ruby and ERB files |
 | `pr-comment-resolver` | Address PR comments and implement fixes |
 | `spec-flow-analyzer` | Analyze user flows and identify gaps in specifications |
@@ -114,8 +113,8 @@ Core workflow commands use `workflows:` prefix to avoid collisions with built-in
 | `compound-docs` | Capture solved problems as categorized documentation |
 | `create-agent-skills` | Expert guidance for creating Claude Code skills |
 | `dhh-ruby-style` | Write Ruby/Rails code in DHH's 37signals style |
-| `dspy-ruby` | Build type-safe LLM applications with DSPy.rb |
 | `frontend-design` | Create production-grade frontend interfaces |
+| `kieran-code-quality` | Language-agnostic code quality principles for all Kieran reviewers |
 | `skill-creator` | Guide for creating effective Claude Code skills |
 
 ### Content & Workflow
