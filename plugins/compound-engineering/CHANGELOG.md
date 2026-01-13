@@ -5,6 +5,27 @@ All notable changes to the compound-engineering plugin will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.24.0] - 2026-01-13
+
+### Added
+
+- **`agent-browser` skill** - Comprehensive documentation for Vercel's agent-browser CLI. Automate browser interactions for web testing, form filling, screenshots, and data extraction. Features:
+  - Fast Rust CLI with Node.js fallback
+  - Element references (`@e1`, `@e2`) for precise interactions
+  - Session state persistence for authentication
+  - Parallel browser sessions
+  - Semantic locators (find by role, text, label)
+
+### Changed
+
+- **MCP Server: Playwright → Agent Browser** - Replaced `@playwright/mcp` with Vercel's `agent-browser` MCP server. The agent-browser CLI provides a more agent-friendly interface with:
+  - Interactive element snapshots with refs
+  - Simpler command syntax
+  - Built-in session management
+  - State save/load for authentication flows
+
+---
+
 ## [2.23.0] - 2026-01-08
 
 ### Added

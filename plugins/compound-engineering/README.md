@@ -8,7 +8,7 @@ AI-powered development tools that get smarter with every use. Make each unit of 
 |-----------|-------|
 | Agents | 25 |
 | Commands | 13 |
-| Skills | 12 |
+| Skills | 13 |
 | MCP Servers | 2 |
 
 ## Agents
@@ -123,6 +123,12 @@ Core workflow commands use `workflows:` prefix to avoid collisions with built-in
 |-------|-------------|
 | `gemini-imagegen` | Generate and edit images using Google's Gemini API |
 
+### Browser Automation
+
+| Skill | Description |
+|-------|-------------|
+| `agent-browser` | Automate browser interactions for web testing, form filling, screenshots, and data extraction |
+
 **gemini-imagegen features:**
 - Text-to-image generation
 - Image editing and manipulation
@@ -137,18 +143,22 @@ Core workflow commands use `workflows:` prefix to avoid collisions with built-in
 
 | Server | Description |
 |--------|-------------|
-| `playwright` | Browser automation via `@playwright/mcp` |
+| `agent-browser` | Headless browser automation via Vercel's `agent-browser` |
 | `context7` | Framework documentation lookup via Context7 |
 
-### Playwright
+### Agent Browser
 
-**Tools provided:**
-- `browser_navigate` - Navigate to URLs
-- `browser_take_screenshot` - Take screenshots
-- `browser_click` - Click elements
-- `browser_fill_form` - Fill form fields
-- `browser_snapshot` - Get accessibility snapshot
-- `browser_evaluate` - Execute JavaScript
+Fast Rust CLI with Node.js fallback for browser automation.
+
+**Key commands:**
+- `agent-browser open <url>` - Navigate to URLs
+- `agent-browser snapshot -i` - Get interactive elements with refs
+- `agent-browser click @e1` - Click elements by ref
+- `agent-browser fill @e2 "text"` - Fill form fields
+- `agent-browser screenshot` - Take screenshots
+- `agent-browser wait --load networkidle` - Wait for network idle
+
+See the `agent-browser` skill for full documentation.
 
 ### Context7
 
@@ -170,17 +180,17 @@ claude /plugin install compound-engineering
 
 ### MCP Servers Not Auto-Loading
 
-**Issue:** The bundled MCP servers (Playwright and Context7) may not load automatically when the plugin is installed.
+**Issue:** The bundled MCP servers (Agent Browser and Context7) may not load automatically when the plugin is installed.
 
 **Workaround:** Manually add them to your project's `.claude/settings.json`:
 
 ```json
 {
   "mcpServers": {
-    "playwright": {
+    "agent-browser": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest"],
+      "args": ["-y", "agent-browser@latest", "mcp"],
       "env": {}
     },
     "context7": {
