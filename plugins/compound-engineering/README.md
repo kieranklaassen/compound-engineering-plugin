@@ -202,25 +202,33 @@ Prefer LSP operations for semantic code understanding; use grep for text pattern
 **Detailed version:**
 
 ```markdown
-## Code Search Strategy
+## Code Search Strategy (MANDATORY)
 
-When searching or analyzing code, prioritize LSP tools over grep/search:
+**This applies to ALL code search operations, including work delegated to sub-agents.**
+
+When searching or analyzing code - whether directly or via Task tool agents - prioritize LSP tools over rg:
 
 1. **LSP First** - Use LSP operations for semantic code understanding:
+   - `documentSymbol` - List all symbols in a file (ALWAYS START HERE)
    - `findReferences` - Find all usages of a symbol
    - `goToDefinition` - Navigate to where a symbol is defined
-   - `documentSymbol` - List all symbols in a file
    - `hover` - Get type info and documentation
    - `incomingCalls` - Find callers of a function
    - `outgoingCalls` - Find functions called by a function
 
-2. **Grep Second** - Fall back to grep/rg for:
+2. **rg/Grep Second** - Fall back to text search ONLY for:
    - String literals and comments
    - Config files (YAML, JSON, ENV)
    - TODO/FIXME markers
    - Files without LSP support (Markdown, templates)
 
-LSP provides compiler-accurate results; grep finds text patterns.
+LSP provides compiler-accurate results; rg finds text patterns.
+
+### Agent Delegation
+
+When using the Task tool to spawn agents for code exploration, you MUST include this instruction in the prompt:
+
+> "Use LSP tools (documentSymbol, findReferences, goToDefinition, hover) before falling back to Grep/Glob for code search."
 ```
 
 This influences agents like `repo-research-analyst`, `pattern-recognition-specialist`, and `security-sentinel` to use LSP operations before falling back to grep.
@@ -228,6 +236,7 @@ This influences agents like `repo-research-analyst`, `pattern-recognition-specia
 **When to use LSP prioritization:**
 - TypeScript/JavaScript projects (excellent LSP via tsserver)
 - Python projects (good LSP via Pyright/Pylsp)
+- Rust projects (excellent LSP via rust-analyzer)
 - Ruby projects (good LSP via ruby-lsp/Solargraph)
 - Go projects (excellent LSP via gopls)
 
