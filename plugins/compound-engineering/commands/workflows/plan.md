@@ -49,8 +49,11 @@ Think like a product manager - what would make this issue clear and actionable? 
 
 **Title & Categorization:**
 
-- [ ] Draft clear, searchable issue title using conventional format (e.g., `feat:`, `fix:`, `docs:`)
+- [ ] Draft clear, searchable issue title using conventional format (e.g., `feat: Add user authentication`, `fix: Cart total calculation`)
 - [ ] Determine issue type: enhancement, bug, refactor
+- [ ] Convert title to kebab-case filename: strip prefix colon, lowercase, hyphens for spaces
+  - Example: `feat: Add User Authentication` → `feat-add-user-authentication.md`
+  - Keep it descriptive (3-5 words after prefix) so plans are findable by context
 
 **Stakeholder Analysis:**
 
@@ -367,7 +370,19 @@ end
 
 ## Output Format
 
-Write the plan to `plans/<issue_title>.md`
+**Filename:** Use the kebab-case filename from Step 2 Title & Categorization.
+
+```
+plans/<type>-<descriptive-name>.md
+```
+
+Examples:
+- ✅ `plans/feat-user-authentication-flow.md`
+- ✅ `plans/fix-checkout-race-condition.md`
+- ✅ `plans/refactor-api-client-extraction.md`
+- ❌ `plans/plan-1.md` (not descriptive)
+- ❌ `plans/new-feature.md` (too vague)
+- ❌ `plans/feat: user auth.md` (invalid characters)
 
 ## Post-Generation Options
 
