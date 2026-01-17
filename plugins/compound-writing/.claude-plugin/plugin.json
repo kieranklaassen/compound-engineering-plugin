@@ -1,0 +1,23 @@
+{
+  "name": "compound-writing",
+  "version": "1.0.0",
+  "description": "AI-powered writing tools that compound your writing skills. Includes 7 specialized agents, 4 workflow commands, and 5 skills for research, drafting, editing, and voice consistency.",
+  "author": {
+    "name": "Kieran Klaassen",
+    "email": "kieran@every.to",
+    "url": "https://github.com/kieranklaassen"
+  },
+  "homepage": "https://every.to",
+  "repository": "https://github.com/EveryInc/every-marketplace",
+  "license": "MIT",
+  "keywords": [
+    "ai-powered",
+    "compound-writing",
+    "writing-automation",
+    "voice-consistency",
+    "editorial",
+    "content-creation",
+    "style-guides",
+    "writing-workflow"
+  ]
+}

@@ -1,0 +1,132 @@
+# Voice Profile Template
+# Copy and customize this template for new voice profiles
+
+name: "[voice-name-kebab-case]"
+description: "Brief description of this voice"
+created: "[YYYY-MM-DD]"
+based_on: "[Author name or brand]"
+sample_count: 0
+sample_words: 0
+
+# Layer 1: Immutable Traits
+# Core characteristics that define this voice
+
+traits:
+  - "[trait-1]"  # e.g., direct, analytical, playful
+  - "[trait-2]"
+  - "[trait-3]"
+
+register: "[formal|semiformal|informal|casual]"
+
+prohibited:
+  # Words, phrases, and patterns to never use
+  - "[word or phrase]"
+  - "[pattern description]"
+
+# Vocabulary patterns
+vocabulary:
+  signature_words:
+    - "[word]"
+    - "[phrase]"
+  formality: "[casual|conversational|professional|formal]"
+  complexity: "[simple|moderate|complex]"
+  contractions: "[always|usually|sometimes|never]"
+  technical_density: "[none|light|moderate|heavy]"
+
+# Sentence patterns
+sentences:
+  average_length: 0  # words
+  range: "[min]-[max]"
+  fragment_usage: "[never|rare|occasional|frequent]"
+  opening_preference: "[subject-verb|question|transition|varied]"
+  structure_preference: "[simple|compound|complex|varied]"
+
+# Paragraph patterns
+paragraphs:
+  average_length: 0  # sentences
+  white_space: "[dense|moderate|airy]"
+  structure: "[topic-evidence|claim-support|story-lesson|varied]"
+  opening_type: "[topic-sentence|hook|question|transition]"
+  closing_type: "[conclusion|bridge|punchline|question]"
+
+# Rhythm patterns
+rhythm:
+  pacing: "[staccato|legato|varied]"
+  # Punctuation frequency: never|rare|occasional|frequent
+  em_dash: "[frequency]"
+  parentheses: "[frequency]"
+  semicolon: "[frequency]"
+  exclamation: "[frequency]"
+  # Repetition patterns
+  rule_of_three: "[never|occasional|frequent]"
+  anaphora: "[never|occasional|frequent]"
+
+# Emotional tone
+tone:
+  primary: "[one-word descriptor]"
+  secondary: "[one-word descriptor]"
+  stakes: "[low|medium|high]"
+  distance: "[intimate|conversational|professional|distant]"
+
+# Layer 2: Channel Guidance
+# How voice adapts by medium
+
+channels:
+  blog:
+    length: "[word range]"
+    personality: "[description]"
+    storytelling: "[none|minimal|encouraged|required]"
+    notes: ""
+
+  newsletter:
+    length: "[word range]"
+    personality: "[description]"
+    direct_address: "[yes|no|sometimes]"
+    notes: ""
+
+  social:
+    length: "[char limit or 'thread']"
+    personality: "[description]"
+    hooks: "[required|encouraged|optional]"
+    notes: ""
+
+  documentation:
+    length: "as needed"
+    personality: "[minimal|some|full]"
+    notes: ""
+
+  # Add more channels as needed
+  # email:
+  # presentation:
+  # etc.
+
+# Layer 3: Example Library
+# Exemplars that demonstrate the voice
+
+exemplars:
+  - path: "[relative/path/to/sample.md]"
+    why: "[What this sample demonstrates]"
+    demonstrates:
+      - "[element-1]"  # e.g., hook, pacing, tone
+      - "[element-2]"
+
+  - path: ""
+    why: ""
+    demonstrates: []
+
+  - path: ""
+    why: ""
+    demonstrates: []
+
+# Anti-exemplars (what this voice would NOT do)
+anti_exemplars:
+  - text: "[Example text that violates this voice]"
+    violation: "[What rule it breaks]"
+
+# Metadata
+metadata:
+  confidence: "[high|medium|low]"
+  last_updated: "[YYYY-MM-DD]"
+  notes: |
+    Additional notes about this voice profile.
+    Common challenges, edge cases, etc.
