@@ -178,6 +178,8 @@ brew install vale
 | `BoldEmphasis` | warning | Use italics, not bold |
 | `Numbers` | suggestion | Spell out 1-9 |
 | `Adverbs` | suggestion | Flags cuttable adverbs |
+| `AISlop` | warning | Flags AI-overused words (delve, tapestry, vibrant) |
+| `AIPhrases` | warning | Flags formulaic AI phrases |
 
 ### Integration with Commands
 

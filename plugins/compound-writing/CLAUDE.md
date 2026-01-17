@@ -31,7 +31,7 @@ See `docs/WRITING-ARCHITECTURE.md` for the complete framework mapping:
 | `/writing:compound` | Post-publish | Extract patterns |
 | `/writing:skill` | Setup | Create new skills (voice, domain, format) |
 
-### Agents (7)
+### Agents (8)
 | Agent | Phase | Role |
 |-------|-------|------|
 | `source-researcher` | Discovery | Gather sources, analyze audience |
@@ -40,6 +40,7 @@ See `docs/WRITING-ARCHITECTURE.md` for the complete framework mapping:
 | `clarity-editor` | Editing | Improve clarity, cut jargon |
 | `fact-checker` | Editing | Verify claims and sources |
 | `every-style-editor` | Editing | Every's style guide |
+| `ai-pattern-detector` | Editing | Detect AI slop (delve, tapestry, etc.) |
 | `publishing-optimizer` | Optimization | SEO, social, newsletters |
 
 ### Skills (9)

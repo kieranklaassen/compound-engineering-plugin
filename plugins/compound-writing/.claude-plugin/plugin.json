@@ -1,7 +1,7 @@
 {
   "name": "compound-writing",
-  "version": "1.1.0",
-  "description": "AI-powered writing tools that compound your writing skills. Includes 7 specialized agents, 8 workflow commands, and 9 skills for research, drafting, editing, and voice consistency.",
+  "version": "1.2.0",
+  "description": "AI-powered writing tools that compound your writing skills. Includes 8 specialized agents, 8 workflow commands, and 9 skills for research, drafting, editing, and voice consistency.",
   "author": {
     "name": "Kieran Klaassen",
     "email": "kieran@every.to",

@@ -1,0 +1,65 @@
+# AI Phrase Detector - Flag formulaic AI writing patterns
+# Based on: https://aisdr.com/blog/words-to-avoid-so-you-dont-sound-like-ai/
+
+extends: existence
+message: "'%s' is a formulaic AI phrase. Be more direct and specific."
+level: warning
+ignorecase: true
+tokens:
+  # Formulaic openings
+  - "in today's"
+  - "in the realm of"
+  - "in the world of"
+  - "it's important to note"
+  - "it is important to note"
+  - "it's worth noting"
+  - "it is worth noting"
+  - "it's crucial to"
+  - "it is crucial to"
+  - "in this article"
+  - "in this blog post"
+  - "let's dive in"
+  - "without further ado"
+
+  # Hedging language
+  - "generally speaking"
+  - "to some extent"
+  - "from a broader perspective"
+  - "at the end of the day"
+  - "when it comes to"
+  - "in terms of"
+  - "with that being said"
+  - "that said"
+  - "having said that"
+
+  # Formulaic conclusions
+  - "in summary"
+  - "in conclusion"
+  - "in essence"
+  - "to summarize"
+  - "to conclude"
+  - "all in all"
+  - "overall,"
+
+  # AI landscape phrases
+  - "digital landscape"
+  - "navigate the landscape"
+  - "navigating the"
+  - "ever-evolving"
+  - "ever-changing"
+  - "fast-paced world"
+  - "rapidly evolving"
+  - "dynamic landscape"
+
+  # Hollow intensifiers
+  - "game-changer"
+  - "game changer"
+  - "cutting-edge"
+  - "cutting edge"
+  - "groundbreaking"
+  - "revolutionary"
+  - "transformative"
+  - "next-level"
+  - "best-in-class"
+  - "world-class"
+  - "state-of-the-art"

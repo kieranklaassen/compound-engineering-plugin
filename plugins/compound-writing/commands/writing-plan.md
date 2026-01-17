@@ -127,37 +127,74 @@ Check for existing knowledge:
 
 ---
 
-## Step 4: Parallel Research
+## Step 4: Research Options (BRAINSTORM)
 
-Launch three research agents simultaneously:
+**MANDATORY: Use the AskUserQuestion tool here. Do NOT output options as plain text.**
 
+Most original writing doesn't need web research. Ask first:
+
+```yaml
+tool: AskUserQuestion
+question: "Do you need external research for this piece, or is it based on your own knowledge/experience?"
+header: "Research"
+multiSelect: true
+options:
+  - label: "No research needed"
+    description: "Writing from personal experience or existing knowledge"
+  - label: "Find supporting data/stats"
+    description: "Back up claims with external sources"
+  - label: "Check what's been written"
+    description: "See competitor angles to differentiate"
+  - label: "Deep research"
+    description: "Full research package (sources, audience, competitors)"
 ```
-Task source-researcher: "Research PRIMARY SOURCES for: [topic]
-Find:
-- Original research and data
-- Expert quotes and perspectives
+
+Based on selection:
+
+**If "No research needed":**
+- Skip to Step 5 (Two-Gate Assessment)
+- Note in sources.md: "Original content - no external sources"
+
+**If "Find supporting data/stats":**
+```
+Use AskUserQuestion:
+
+Question: "What specific claims or topics need supporting data?"
+Options:
+1. [Inferred from topic]
+2. [Alternative area]
+3. Other - Describe what you need
+```
+
+Then run targeted search:
+```
+Task source-researcher: "Find supporting data for: [specific topic]
+Looking for:
 - Statistics with citations
-- Concrete examples and case studies
-Return: Structured source list with reliability ratings."
-
-Task source-researcher: "Analyze TARGET AUDIENCE for: [topic]
-Determine:
-- What they already know (baseline)
-- Their emotional state and concerns
-- Goals and objections
-- Language they use
-Return: Audience profile with communication recommendations."
-
-Task source-researcher: "Analyze COMPETITOR CONTENT for: [topic]
-Find:
-- Top 5 existing pieces on this topic
-- Their angles and approaches
-- Gaps and weaknesses
-- Differentiation opportunities
-Return: Competitive landscape with recommended angles."
+- Research studies
+- Expert quotes
+Return: 3-5 specific sources with quotes."
 ```
 
-**Wait for all three to complete before proceeding.**
+**If "Check what's been written":**
+```
+Task source-researcher: "Analyze existing content on: [topic]
+Find:
+- Top 3-5 existing pieces
+- Their angles and gaps
+- Differentiation opportunities
+Return: Brief competitive landscape."
+```
+
+**If "Deep research":**
+Run all three research agents in parallel:
+```
+Task source-researcher: "Research PRIMARY SOURCES for: [topic]..."
+Task source-researcher: "Analyze TARGET AUDIENCE for: [topic]..."
+Task source-researcher: "Analyze COMPETITOR CONTENT for: [topic]..."
+```
+
+**Wait for any selected research to complete before proceeding.**
 
 ---
 
