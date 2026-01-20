@@ -5,6 +5,22 @@ compound-engineeringプラグインのすべての重要な変更は、このフ
 この形式は[Keep a Changelog](https://keepachangelog.com/en/1.0.0/)に基づいており、
 このプロジェクトは[セマンティックバージョニング](https://semver.org/spec/v2.0.0.html)に準拠しています。
 
+## [2.26.0] - 2026-01-20
+
+### 削除
+
+- **`every-style-editor` スキル** - Everyのスタイルガイド準拠のためのコピーレビュースキルを削除。
+
+---
+
+## [2.25.0] - 2026-01-20
+
+### 削除
+
+- **`andrew-kane-gem-writer` スキル** - Andrew Kaneのパターンと哲学に従ったRuby gem作成のスキルを削除。
+
+---
+
 ## [2.24.0] - 2026-01-13
 
 ### 追加
