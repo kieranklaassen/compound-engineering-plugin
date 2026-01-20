@@ -4,10 +4,29 @@ A Claude Code plugin marketplace featuring the **Compound Engineering Plugin** â
 
 ## Install
 
+### Claude Code
+
 ```bash
 /plugin marketplace add https://github.com/kieranklaassen/compound-engineering-plugin
 /plugin install compound-engineering
 ```
+
+### OpenCode
+
+OpenCode-compatible configs are available in the `opencode/` directory:
+
+```bash
+# Copy agents
+cp -r opencode/agents/* ~/.config/opencode/agent/compound-engineering/
+
+# Copy commands
+cp opencode/commands/* ~/.config/opencode/command/
+
+# Copy skills
+cp -r opencode/skills/* ~/.config/opencode/skill/
+```
+
+See [opencode/README.md](opencode/README.md) for full details.
 
 ## Workflow
 
