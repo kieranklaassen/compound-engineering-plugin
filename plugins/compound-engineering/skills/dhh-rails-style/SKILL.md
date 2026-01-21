@@ -54,15 +54,16 @@ What are you working on?
 </intake>
 
 <routing>
+
 | Response | Reference to Read |
 |----------|-------------------|
-| 1, "controller" | [controllers.md](./references/controllers.md) |
-| 2, "model" | [models.md](./references/models.md) |
-| 3, "view", "frontend", "turbo", "stimulus", "css" | [frontend.md](./references/frontend.md) |
-| 4, "architecture", "routing", "auth", "job", "cache" | [architecture.md](./references/architecture.md) |
-| 5, "test", "testing", "minitest", "fixture" | [testing.md](./references/testing.md) |
-| 6, "gem", "dependency", "library" | [gems.md](./references/gems.md) |
-| 7, "review" | Read all references, then review code |
+| 1, controller | [controllers.md](./references/controllers.md) |
+| 2, model | [models.md](./references/models.md) |
+| 3, view, frontend, turbo, stimulus, css | [frontend.md](./references/frontend.md) |
+| 4, architecture, routing, auth, job, cache | [architecture.md](./references/architecture.md) |
+| 5, test, testing, minitest, fixture | [testing.md](./references/testing.md) |
+| 6, gem, dependency, library | [gems.md](./references/gems.md) |
+| 7, review | Read all references, then review code |
 | 8, general task | Read relevant references based on context |
 
 **After reading relevant references, apply patterns to the user's code.**
