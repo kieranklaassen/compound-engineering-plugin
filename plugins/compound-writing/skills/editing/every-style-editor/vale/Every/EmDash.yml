@@ -1,0 +1,9 @@
+extends: existence
+message: "Em dashes should not have spaces around them. Use '—' not ' — ' or ' – '."
+level: error
+tokens:
+  - ' — '
+  - ' – '
+  - ' - '
+  - '— '
+  - ' —'

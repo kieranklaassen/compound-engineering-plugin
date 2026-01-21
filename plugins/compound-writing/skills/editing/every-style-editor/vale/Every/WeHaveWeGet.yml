@@ -1,0 +1,9 @@
+extends: existence
+message: "Avoid '%s' at the start of sentences — say directly what is happening."
+level: warning
+ignorecase: true
+tokens:
+  - '^We have '
+  - '^We get '
+  - '\. We have '
+  - '\. We get '

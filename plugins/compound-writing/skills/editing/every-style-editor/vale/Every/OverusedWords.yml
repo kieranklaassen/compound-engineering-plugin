@@ -1,0 +1,11 @@
+extends: existence
+message: "Avoid overusing '%s' — it can almost always be deleted."
+level: warning
+ignorecase: true
+tokens:
+  - actually
+  - very
+  - just
+  - really
+  - basically
+  - literally

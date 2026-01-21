@@ -1,0 +1,13 @@
+extends: existence
+message: "Spell out numbers one through nine. Use numerals for 10 and greater."
+level: suggestion
+tokens:
+  - '\b1\b'
+  - '\b2\b'
+  - '\b3\b'
+  - '\b4\b'
+  - '\b5\b'
+  - '\b6\b'
+  - '\b7\b'
+  - '\b8\b'
+  - '\b9\b'

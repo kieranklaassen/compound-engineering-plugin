@@ -1,0 +1,6 @@
+extends: existence
+message: "Avoid starting sentences with 'This' — be specific about what you're referring to."
+level: warning
+tokens:
+  - '^This '
+  - '\. This '

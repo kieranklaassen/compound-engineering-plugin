@@ -1,0 +1,5 @@
+extends: existence
+message: "Use italics for emphasis, not bold. Bold should not be used for emphasis."
+level: warning
+tokens:
+  - '\*\*\w+\*\*'

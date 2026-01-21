@@ -1,0 +1,6 @@
+extends: existence
+message: "Use the Oxford comma (serial comma) before 'and' or 'or' in a series."
+level: warning
+tokens:
+  - ', \w+ and \w+$'
+  - ', \w+ or \w+$'

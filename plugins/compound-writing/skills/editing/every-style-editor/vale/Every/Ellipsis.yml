@@ -1,0 +1,6 @@
+extends: existence
+message: "No space before an ellipsis, one space after. Don't use ellipsis for emphasis."
+level: warning
+tokens:
+  - ' \.\.\.'
+  - ' …'

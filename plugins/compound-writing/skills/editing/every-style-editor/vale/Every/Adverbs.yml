@@ -1,0 +1,20 @@
+extends: existence
+message: "Consider cutting the adverb '%s' — it may be unnecessary."
+level: suggestion
+ignorecase: true
+tokens:
+  - extremely
+  - incredibly
+  - absolutely
+  - definitely
+  - certainly
+  - completely
+  - totally
+  - entirely
+  - highly
+  - truly
+  - quite
+  - rather
+  - somewhat
+  - fairly
+  - slightly

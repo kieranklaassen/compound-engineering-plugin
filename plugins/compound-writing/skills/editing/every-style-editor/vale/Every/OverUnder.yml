@@ -1,0 +1,8 @@
+extends: substitution
+message: "Use '%s' instead of '%s' when referring to numbers or quantities."
+level: warning
+ignorecase: true
+swap:
+  'over (\d+)': 'more than $1'
+  'under (\d+)': 'fewer than $1'
+  'under (\d+)': 'less than $1'

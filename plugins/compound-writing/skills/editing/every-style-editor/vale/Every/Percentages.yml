@@ -1,0 +1,7 @@
+extends: substitution
+message: "Use numerals with 'percent' spelled out: '%s' instead of '%s'."
+level: error
+ignorecase: true
+swap:
+  '(\d+)%': '$1 percent'
+  '(\d+) %': '$1 percent'

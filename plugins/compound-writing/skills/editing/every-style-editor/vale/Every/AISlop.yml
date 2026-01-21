@@ -1,0 +1,79 @@
+# AI Slop Detector - Flag common AI-generated writing patterns
+# Based on: https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
+# And: https://aisdr.com/blog/words-to-avoid-so-you-dont-sound-like-ai/
+
+extends: existence
+message: "'%s' is a common AI writing pattern. Consider more specific, human language."
+level: warning
+ignorecase: true
+tokens:
+  # Red flag words (high confidence AI tells)
+  - delve
+  - delves
+  - delving
+  - tapestry
+  - vibrant
+  - multifaceted
+  - testament
+  - pivotal
+  - realm
+  - meticulous
+  - meticulously
+  - nuanced
+  - intricacies
+  - synergy
+  - paradigm
+  - holistic
+  - robust
+  - seamless
+  - seamlessly
+
+  # Overused AI verbs
+  - illuminate
+  - illuminates
+  - illuminating
+  - underscore
+  - underscores
+  - underscoring
+  - embody
+  - embodies
+  - embodying
+  - transcend
+  - transcends
+  - transcending
+  - foster
+  - fosters
+  - fostering
+  - grapple
+  - grapples
+  - grappling
+  - espouse
+  - espouses
+  - espousing
+  - intertwine
+  - intertwines
+  - intertwining
+  - endeavor
+  - endeavors
+  - endeavour
+  - endeavours
+
+  # Corporate AI speak
+  - leverage
+  - leveraging
+  - leverages
+  - utilize
+  - utilizing
+  - utilizes
+  - optimize
+  - optimizing
+  - optimizes
+  - facilitate
+  - facilitating
+  - facilitates
+  - streamline
+  - streamlining
+  - streamlines
+  - spearhead
+  - spearheading
+  - spearheads

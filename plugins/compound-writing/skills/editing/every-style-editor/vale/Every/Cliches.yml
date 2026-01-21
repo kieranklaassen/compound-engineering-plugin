@@ -1,0 +1,34 @@
+extends: existence
+message: "Avoid clichés and jargon: '%s'"
+level: warning
+ignorecase: true
+tokens:
+  - at the end of the day
+  - low-hanging fruit
+  - move the needle
+  - circle back
+  - touch base
+  - synergy
+  - leverage
+  - paradigm shift
+  - think outside the box
+  - game changer
+  - disrupt
+  - pivot
+  - deep dive
+  - unpack
+  - double down
+  - lean in
+  - best practices
+  - value add
+  - bandwidth
+  - take it offline
+  - put a pin in it
+  - boil the ocean
+  - drink the Kool-Aid
+  - low-hanging fruit
+  - move the goalpost
+  - get granular
+  - actionable insights
+  - core competency
+  - value proposition

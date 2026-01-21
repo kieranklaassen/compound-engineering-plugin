@@ -1,0 +1,36 @@
+extends: existence
+message: "Passive voice detected. Use active voice whenever possible: '%s'"
+level: warning
+ignorecase: true
+tokens:
+  - is being
+  - was being
+  - were being
+  - has been
+  - have been
+  - had been
+  - will be
+  - is done
+  - was done
+  - were done
+  - is made
+  - was made
+  - were made
+  - is used
+  - was used
+  - were used
+  - is called
+  - was called
+  - were called
+  - is considered
+  - was considered
+  - were considered
+  - is known
+  - was known
+  - were known
+  - is seen
+  - was seen
+  - were seen
+  - is found
+  - was found
+  - were found

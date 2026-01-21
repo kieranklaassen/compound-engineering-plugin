@@ -1,0 +1,17 @@
+extends: existence
+message: "Refer to companies as singular ('it'), not plural ('they/them'). Use 'they' only for teams/people within companies."
+level: suggestion
+ignorecase: true
+tokens:
+  - the company they
+  - the company their
+  - the company them
+  - the startup they
+  - the startup their
+  - the startup them
+  - Apple they
+  - Google they
+  - Microsoft they
+  - Amazon they
+  - Meta they
+  - Facebook they

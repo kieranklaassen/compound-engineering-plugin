@@ -132,3 +132,74 @@ Based on Every's style guide, pay special attention to:
 - Word usage (fewer vs. less, they vs. them)
 - Company references (singular "it", teams as plural "they")
 - Job title capitalization
+
+## Vale Linting
+
+This skill includes automated linting via [Vale](https://vale.sh/).
+
+### Running Vale
+
+Always use the script to lint files:
+
+```bash
+# Lint a single file
+bash ${CLAUDE_PLUGIN_ROOT}/skills/editing/every-style-editor/scripts/lint.sh drafts/my-post.md
+
+# Lint a directory
+bash ${CLAUDE_PLUGIN_ROOT}/skills/editing/every-style-editor/scripts/lint.sh drafts/
+
+# Check if Vale is installed
+bash ${CLAUDE_PLUGIN_ROOT}/skills/editing/every-style-editor/scripts/lint.sh --help
+```
+
+### Install Vale (if needed)
+
+```bash
+# macOS
+brew install vale
+
+# Or download from https://vale.sh/docs/vale-cli/installation/
+```
+
+### Rules Included
+
+| Rule | Level | Description |
+|------|-------|-------------|
+| `OverusedWords` | warning | Flags "actually", "very", "just" |
+| `PassiveVoice` | warning | Detects passive voice |
+| `EmDash` | error | No spaces around em dashes |
+| `OxfordComma` | warning | Encourages serial comma |
+| `ClickHere` | error | Flags "click here" links |
+| `StartWithThis` | warning | Avoids sentences starting with "This" |
+| `WeHaveWeGet` | warning | Avoids "We have/get" openings |
+| `Cliches` | warning | Flags business jargon |
+| `Percentages` | error | Enforces "X percent" not "X%" |
+| `CompanyPronouns` | suggestion | Companies as "it" not "they" |
+| `BoldEmphasis` | warning | Use italics, not bold |
+| `Numbers` | suggestion | Spell out 1-9 |
+| `Adverbs` | suggestion | Flags cuttable adverbs |
+| `AISlop` | warning | Flags AI-overused words (delve, tapestry, vibrant) |
+| `AIPhrases` | warning | Flags formulaic AI phrases |
+
+### Integration with Commands
+
+The `/writing:review` command can optionally run Vale:
+
+```bash
+# During review, Vale is run automatically if installed
+claude /writing:review drafts/my-post/draft-v1.md
+```
+
+### Customizing Rules
+
+Edit the YAML files in `vale/Every/` to customize:
+
+```yaml
+# Add forbidden words
+# vale/Every/OverusedWords.yml
+tokens:
+  - actually
+  - your-word-here
+```
+
+See [vale/README.md](./vale/README.md) for full documentation

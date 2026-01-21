@@ -1,0 +1,11 @@
+extends: existence
+message: "Avoid '%s' — write the sentence naturally and link relevant keywords (2-4 words)."
+level: error
+ignorecase: true
+tokens:
+  - click here
+  - click for more
+  - click to
+  - read more here
+  - learn more here
+  - here's the link
