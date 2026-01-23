@@ -73,9 +73,11 @@ function convertCommandSkill(command: ClaudeCommand, usedNames: Set<string>): Co
   if (command.allowedTools && command.allowedTools.length > 0) {
     sections.push(`## Allowed tools\n${command.allowedTools.map((tool) => `- ${tool}`).join("\n")}`)
   }
-  sections.push(command.body.trim())
+  // Transform @agent- syntax to Task() calls for Codex
+  const transformedBody = transformAgentSyntax(command.body.trim())
+  sections.push(transformedBody)
   const body = sections.filter(Boolean).join("\n\n").trim()
-  const content = formatFrontmatter(frontmatter, body.length > 0 ? body : command.body)
+  const content = formatFrontmatter(frontmatter, body.length > 0 ? body : transformedBody)
   return { name, content }
 }
 
@@ -85,8 +87,49 @@ function renderPrompt(command: ClaudeCommand, skillName: string): string {
     "argument-hint": command.argumentHint,
   }
   const instructions = `Use the $${skillName} skill for this command and follow its instructions.`
-  const body = [instructions, "", command.body].join("\n").trim()
+  // Transform @agent- syntax to Task() calls for Codex
+  const transformedBody = transformAgentSyntax(command.body)
+  const body = [instructions, "", transformedBody].join("\n").trim()
   return formatFrontmatter(frontmatter, body)
+}
+
+/**
+ * Transform Claude Code @agent-name syntax to Codex Task() calls
+ * Example: "@agent-dhh-rails-reviewer @agent-kieran-rails-reviewer"
+ * becomes: "Task(subagent_type='dhh-rails-reviewer', ...) and Task(subagent_type='kieran-rails-reviewer', ...)"
+ */
+function transformAgentSyntax(text: string): string {
+  // Match @agent-<name> pattern
+  const agentPattern = /@agent-([a-z0-9-]+)/gi
+  const matches = Array.from(text.matchAll(agentPattern))
+  
+  if (matches.length === 0) {
+    return text
+  }
+  
+  // Build replacement text with Task() calls
+  const taskCalls = matches.map((match) => {
+    const agentName = match[1]
+    return `Task(\n  subagent_type="${agentName}",\n  description="${agentName} review",\n  prompt="[Your prompt here with context]"\n)`
+  })
+  
+  // Replace the @agent- mentions with a helpful instruction
+  let result = text.replace(
+    agentPattern,
+    (match) => {
+      const agentName = match.substring(7) // Remove '@agent-'
+      return `the ${agentName} agent`
+    }
+  )
+  
+  // Add instructions for launching agents in parallel
+  if (matches.length > 1) {
+    result += `\n\n**Launch these ${matches.length} agents IN PARALLEL using the Task tool:**\n\n${taskCalls.join("\n\n")}\n\n**IMPORTANT:** Include all Task calls in a single message to run them in parallel.`
+  } else {
+    result += `\n\n**Launch this agent using the Task tool:**\n\n${taskCalls[0]}`
+  }
+  
+  return result
 }
 
 function normalizeName(value: string): string {
