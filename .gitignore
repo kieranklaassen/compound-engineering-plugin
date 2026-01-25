@@ -2,3 +2,4 @@
 *.log
 node_modules/
 .ai
+.claude/settings.local.json

@@ -1,0 +1,252 @@
+#!/bin/bash
+# Syncs upstream content changes from EveryInc/compound-engineering-plugin
+# to the _source directory while preserving local structural changes.
+#
+# Usage:
+#   ./bin/sync-upstream           # Interactive mode (default)
+#   ./bin/sync-upstream --dry-run # Show what would change without applying
+#   ./bin/sync-upstream --yes     # Apply all changes without prompting
+
+set -e
+
+PLUGIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+SOURCE_DIR="$PLUGIN_ROOT/_source"
+UPSTREAM_REMOTE="upstream"
+UPSTREAM_URL="https://github.com/EveryInc/compound-engineering-plugin.git"
+
+# Parse arguments
+DRY_RUN=false
+AUTO_YES=false
+for arg in "$@"; do
+  case $arg in
+    --dry-run|-n)
+      DRY_RUN=true
+      ;;
+    --yes|-y)
+      AUTO_YES=true
+      ;;
+    --help|-h)
+      echo "Usage: sync-upstream [OPTIONS]"
+      echo ""
+      echo "Options:"
+      echo "  --dry-run, -n   Show what would change without applying"
+      echo "  --yes, -y       Apply all changes without prompting"
+      echo "  --help, -h      Show this help message"
+      exit 0
+      ;;
+  esac
+done
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+echo -e "${BLUE}=== Upstream Sync ===${NC}"
+if $DRY_RUN; then
+  echo -e "${YELLOW}(dry run - no changes will be made)${NC}"
+fi
+echo ""
+
+# Ensure we're in the git repo root
+cd "$(git rev-parse --show-toplevel)"
+
+# Ensure upstream remote exists
+if ! git remote get-url "$UPSTREAM_REMOTE" &>/dev/null; then
+  echo -e "${YELLOW}Adding upstream remote...${NC}"
+  if ! $DRY_RUN; then
+    git remote add "$UPSTREAM_REMOTE" "$UPSTREAM_URL"
+  else
+    echo "Would add remote: $UPSTREAM_URL"
+  fi
+fi
+
+echo "Fetching upstream..."
+git fetch "$UPSTREAM_REMOTE" --quiet
+
+# Get current branch for comparison
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+echo "Comparing $CURRENT_BRANCH with $UPSTREAM_REMOTE/main"
+echo ""
+
+# Components to sync
+COMPONENTS=("agents" "commands" "skills")
+
+# Track changes for summary
+ADDED_FILES=()
+MODIFIED_FILES=()
+SKIPPED_FILES=()
+PENDING_ADD=()
+PENDING_MOD=()
+
+# Function to map upstream path to local _source path
+map_path() {
+  local upstream_path="$1"
+  echo "$upstream_path" | sed 's|plugins/compound-engineering/|plugins/compound-engineering/_source/|'
+}
+
+# Function to prompt user (respects --yes flag)
+prompt_user() {
+  local prompt="$1"
+  local default="$2"
+
+  if $AUTO_YES; then
+    echo "y"
+    return
+  fi
+
+  echo -n "$prompt "
+  read -r choice
+  echo "${choice:-$default}"
+}
+
+# Process each component type
+for component in "${COMPONENTS[@]}"; do
+  echo -e "${BLUE}=== $component ===${NC}"
+
+  # Get changes for this component
+  changes=$(git diff "main" "$UPSTREAM_REMOTE/main" --name-status -- "plugins/compound-engineering/$component/" 2>/dev/null || true)
+
+  if [ -z "$changes" ]; then
+    echo "No changes"
+    echo ""
+    continue
+  fi
+
+  while IFS=$'\t' read -r status upstream_path; do
+    # Skip empty lines
+    [ -z "$status" ] && continue
+
+    # Map to local path
+    local_path=$(map_path "$upstream_path")
+    filename=$(basename "$upstream_path")
+    relative_path="${upstream_path#plugins/compound-engineering/}"
+
+    case $status in
+      A)
+        echo -e "${GREEN}NEW:${NC} $relative_path"
+        if $DRY_RUN; then
+          PENDING_ADD+=("$relative_path")
+        else
+          choice=$(prompt_user "Add this file? [y/n/s(kip all new)]" "n")
+          case $choice in
+            y|Y)
+              mkdir -p "$(dirname "$local_path")"
+              git show "$UPSTREAM_REMOTE/main:$upstream_path" > "$local_path"
+              ADDED_FILES+=("$relative_path")
+              echo -e "${GREEN}Added${NC}"
+              ;;
+            s|S)
+              echo "Skipping all new files..."
+              break
+              ;;
+            *)
+              SKIPPED_FILES+=("$relative_path")
+              echo "Skipped"
+              ;;
+          esac
+        fi
+        ;;
+
+      M)
+        echo -e "${YELLOW}MODIFIED:${NC} $relative_path"
+        if $DRY_RUN; then
+          PENDING_MOD+=("$relative_path")
+        else
+          if ! $AUTO_YES; then
+            echo -n "Show diff? [y/n] "
+            read -r show_diff
+            if [ "$show_diff" = "y" ] || [ "$show_diff" = "Y" ]; then
+              echo ""
+              git diff "main" "$UPSTREAM_REMOTE/main" -- "$upstream_path" | head -100
+              echo ""
+              echo "(showing first 100 lines of diff)"
+              echo ""
+            fi
+          fi
+          choice=$(prompt_user "Apply this change? [y/n/s(kip all modified)]" "n")
+          case $choice in
+            y|Y)
+              mkdir -p "$(dirname "$local_path")"
+              git show "$UPSTREAM_REMOTE/main:$upstream_path" > "$local_path"
+              MODIFIED_FILES+=("$relative_path")
+              echo -e "${GREEN}Applied${NC}"
+              ;;
+            s|S)
+              echo "Skipping all modified files..."
+              break
+              ;;
+            *)
+              SKIPPED_FILES+=("$relative_path")
+              echo "Skipped"
+              ;;
+          esac
+        fi
+        ;;
+
+      D)
+        # Upstream deletions are informational only - we keep local files
+        echo -e "${YELLOW}Note:${NC} $relative_path was removed upstream (keeping local copy)"
+        ;;
+    esac
+    echo ""
+  done <<< "$changes"
+done
+
+# Summary
+echo -e "${BLUE}=== Summary ===${NC}"
+echo ""
+
+if $DRY_RUN; then
+  if [ ${#PENDING_ADD[@]} -gt 0 ]; then
+    echo -e "${GREEN}Would add (${#PENDING_ADD[@]}):${NC}"
+    printf '  - %s\n' "${PENDING_ADD[@]}"
+  fi
+  if [ ${#PENDING_MOD[@]} -gt 0 ]; then
+    echo -e "${YELLOW}Would modify (${#PENDING_MOD[@]}):${NC}"
+    printf '  - %s\n' "${PENDING_MOD[@]}"
+  fi
+  total_pending=$((${#PENDING_ADD[@]} + ${#PENDING_MOD[@]}))
+  if [ $total_pending -eq 0 ]; then
+    echo "No changes found."
+  else
+    echo ""
+    echo "Run without --dry-run to apply changes."
+  fi
+else
+  if [ ${#ADDED_FILES[@]} -gt 0 ]; then
+    echo -e "${GREEN}Added (${#ADDED_FILES[@]}):${NC}"
+    printf '  - %s\n' "${ADDED_FILES[@]}"
+  fi
+
+  if [ ${#MODIFIED_FILES[@]} -gt 0 ]; then
+    echo -e "${YELLOW}Modified (${#MODIFIED_FILES[@]}):${NC}"
+    printf '  - %s\n' "${MODIFIED_FILES[@]}"
+  fi
+
+  if [ ${#SKIPPED_FILES[@]} -gt 0 ]; then
+    echo "Skipped (${#SKIPPED_FILES[@]}):"
+    printf '  - %s\n' "${SKIPPED_FILES[@]}"
+  fi
+
+  total_changes=$((${#ADDED_FILES[@]} + ${#MODIFIED_FILES[@]}))
+
+  if [ $total_changes -gt 0 ]; then
+    echo ""
+    echo -e "${BLUE}Running build to regenerate output directories...${NC}"
+    "$PLUGIN_ROOT/bin/build"
+
+    echo ""
+    echo -e "${GREEN}Sync complete!${NC}"
+    echo ""
+    echo "Next steps:"
+    echo "  1. Review changes: git diff"
+    echo "  2. Test the plugin"
+    echo "  3. Commit: git add -A && git commit -m 'Sync upstream changes'"
+  else
+    echo ""
+    echo "No changes applied."
+  fi
+fi
