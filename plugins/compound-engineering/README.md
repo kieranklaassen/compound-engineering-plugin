@@ -6,14 +6,14 @@ AI-powered development tools that get smarter with every use. Make each unit of 
 
 | Component | Count |
 |-----------|-------|
-| Agents | 27 |
+| Agents | 28 |
 | Commands | 24 |
-| Skills | 14 |
+| Skills | 15 |
 | MCP Servers | 1 |
 
 ## Quick Start: Customize Your Installation
 
-By default, all 65 components load into your context. To reduce context usage and only load what you need:
+By default, all 68 components load into your context. To reduce context usage and only load what you need:
 
 ```
 /compound:configure
@@ -67,7 +67,7 @@ Agents are organized into categories for easier discovery.
 | `design-iterator` | Iteratively refine UI through systematic design iterations |
 | `figma-design-sync` | Synchronize web implementations with Figma designs |
 
-### Workflow (5)
+### Workflow (6)
 
 | Agent | Description |
 |-------|-------------|
@@ -76,6 +76,7 @@ Agents are organized into categories for easier discovery.
 | `lint` | Run linting and code quality checks on Ruby and ERB files |
 | `pr-comment-resolver` | Address PR comments and implement fixes |
 | `spec-flow-analyzer` | Analyze user flows and identify gaps in specifications |
+| `sync-reviewer` | Pre-analyze upstream diffs and recommend accept/skip decisions |
 
 ### Docs (1)
 
@@ -208,7 +209,7 @@ claude /plugin install compound-engineering
 
 ## Selective Component Loading
 
-By default, all 64 components load into your Claude Code context. To reduce context usage, configure which components to load.
+By default, all 68 components load into your Claude Code context. To reduce context usage, configure which components to load.
 
 ### Quick Start
 
@@ -259,7 +260,7 @@ The config file supports four component types:
 }
 ```
 
-This reduces from 64 components to 8, significantly lowering context usage.
+This reduces from 68 components to 8, significantly lowering context usage.
 
 ### Available Components
 

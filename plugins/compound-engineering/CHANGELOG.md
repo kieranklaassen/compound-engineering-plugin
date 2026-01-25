@@ -5,6 +5,37 @@ All notable changes to the compound-engineering plugin will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.28.0] - 2026-01-25
+
+### Added
+
+- **`bin/sync-upstream` script** - Sync content updates from upstream EveryInc/compound-engineering-plugin
+  - Interactive mode with diff review for each change
+  - `--dry-run` flag to preview changes without applying
+  - `--yes` flag to auto-accept all changes
+  - Preserves local structural changes (build system, config)
+  - Automatically runs `bin/build` after syncing
+
+- **`sync-upstream` skill** - Documentation for the upstream sync workflow
+  - When to sync, how to use the script, troubleshooting
+
+- **`sync-reviewer` agent** - Pre-analyze upstream diffs before syncing
+  - Categorizes changes (bug fix, enhancement, refactor, etc.)
+  - Recommends accept/skip based on impact and risk
+  - Helps prioritize which upstream updates to apply
+
+- **`docs/solutions/structural-fork-pattern.md`** - Documents the pattern for maintaining forks with local structural changes while syncing upstream content
+
+### Changed
+
+- Updated `.gitignore` to include `.claude/settings.local.json`
+
+### Summary
+
+- 28 agents, 24 commands, 15 skills, 1 MCP server
+
+---
+
 ## [2.27.0] - 2026-01-20
 
 ### Added
