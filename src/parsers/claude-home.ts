@@ -4,7 +4,6 @@ import fs from "fs/promises"
 import type { ClaudeSkill, ClaudeMcpServer } from "../types/claude"
 
 export interface ClaudeHomeConfig {
-  root: string
   skills: ClaudeSkill[]
   mcpServers: Record<string, ClaudeMcpServer>
 }
@@ -17,7 +16,7 @@ export async function loadClaudeHome(claudeHome?: string): Promise<ClaudeHomeCon
     loadSettingsMcp(path.join(home, "settings.json")),
   ])
 
-  return { root: home, skills, mcpServers }
+  return { skills, mcpServers }
 }
 
 async function loadPersonalSkills(skillsDir: string): Promise<ClaudeSkill[]> {

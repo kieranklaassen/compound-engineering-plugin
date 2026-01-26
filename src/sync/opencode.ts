@@ -3,6 +3,7 @@ import path from "path"
 import type { ClaudeHomeConfig } from "../parsers/claude-home"
 import type { ClaudeMcpServer } from "../types/claude"
 import type { OpenCodeMcpServer } from "../types/opencode"
+import { forceSymlink, isValidSkillName } from "../utils/symlink"
 
 export async function syncToOpenCode(
   config: ClaudeHomeConfig,
@@ -12,8 +13,12 @@ export async function syncToOpenCode(
   const skillsDir = path.join(outputRoot, "skills")
   await fs.mkdir(skillsDir, { recursive: true })
 
-  // Symlink skills
+  // Symlink skills (with validation)
   for (const skill of config.skills) {
+    if (!isValidSkillName(skill.name)) {
+      console.warn(`Skipping skill with invalid name: ${skill.name}`)
+      continue
+    }
     const target = path.join(skillsDir, skill.name)
     await forceSymlink(skill.sourceDir, target)
   }
@@ -24,21 +29,19 @@ export async function syncToOpenCode(
     const existing = await readJsonSafe(configPath)
     const mcpConfig = convertMcpForOpenCode(config.mcpServers)
     existing.mcp = { ...(existing.mcp ?? {}), ...mcpConfig }
-    await fs.writeFile(configPath, JSON.stringify(existing, null, 2))
+    await fs.writeFile(configPath, JSON.stringify(existing, null, 2), { mode: 0o600 })
   }
-}
-
-async function forceSymlink(source: string, target: string): Promise<void> {
-  await fs.rm(target, { recursive: true, force: true })
-  await fs.symlink(source, target)
 }
 
 async function readJsonSafe(filePath: string): Promise<Record<string, unknown>> {
   try {
     const content = await fs.readFile(filePath, "utf-8")
     return JSON.parse(content) as Record<string, unknown>
-  } catch {
-    return {}
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      return {}
+    }
+    throw err
   }
 }
 

@@ -2,6 +2,7 @@ import fs from "fs/promises"
 import path from "path"
 import type { ClaudeHomeConfig } from "../parsers/claude-home"
 import type { ClaudeMcpServer } from "../types/claude"
+import { forceSymlink, isValidSkillName } from "../utils/symlink"
 
 export async function syncToCodex(
   config: ClaudeHomeConfig,
@@ -11,33 +12,54 @@ export async function syncToCodex(
   const skillsDir = path.join(outputRoot, "skills")
   await fs.mkdir(skillsDir, { recursive: true })
 
-  // Symlink skills
+  // Symlink skills (with validation)
   for (const skill of config.skills) {
+    if (!isValidSkillName(skill.name)) {
+      console.warn(`Skipping skill with invalid name: ${skill.name}`)
+      continue
+    }
     const target = path.join(skillsDir, skill.name)
     await forceSymlink(skill.sourceDir, target)
   }
 
-  // Append MCP servers to config.toml (TOML format)
+  // Write MCP servers to config.toml (TOML format)
   if (Object.keys(config.mcpServers).length > 0) {
     const configPath = path.join(outputRoot, "config.toml")
     const mcpToml = convertMcpForCodex(config.mcpServers)
 
-    // Check if MCP servers already exist in config
+    // Read existing config and merge idempotently
+    let existingContent = ""
     try {
-      const existing = await fs.readFile(configPath, "utf-8")
-      if (!existing.includes("[mcp_servers.")) {
-        await fs.appendFile(configPath, "\n# MCP servers synced from Claude Code\n" + mcpToml)
+      existingContent = await fs.readFile(configPath, "utf-8")
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+        throw err
       }
-    } catch {
-      // File doesn't exist, create it
-      await fs.writeFile(configPath, "# Codex config - synced from Claude Code\n\n" + mcpToml)
     }
+
+    // Remove any existing Claude Code MCP section to make idempotent
+    const marker = "# MCP servers synced from Claude Code"
+    const markerIndex = existingContent.indexOf(marker)
+    if (markerIndex !== -1) {
+      existingContent = existingContent.slice(0, markerIndex).trimEnd()
+    }
+
+    const newContent = existingContent
+      ? existingContent + "\n\n" + marker + "\n" + mcpToml
+      : "# Codex config - synced from Claude Code\n\n" + mcpToml
+
+    await fs.writeFile(configPath, newContent, { mode: 0o600 })
   }
 }
 
-async function forceSymlink(source: string, target: string): Promise<void> {
-  await fs.rm(target, { recursive: true, force: true })
-  await fs.symlink(source, target)
+/** Escape a string for TOML double-quoted strings */
+function escapeTomlString(str: string): string {
+  return str
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "\\n")
+    .replace(/\r/g, "\\r")
+    .replace(/\t/g, "\\t")
 }
 
 function convertMcpForCodex(servers: Record<string, ClaudeMcpServer>): string {
@@ -48,10 +70,10 @@ function convertMcpForCodex(servers: Record<string, ClaudeMcpServer>): string {
 
     const lines: string[] = []
     lines.push(`[mcp_servers.${name}]`)
-    lines.push(`command = "${server.command}"`)
+    lines.push(`command = "${escapeTomlString(server.command)}"`)
 
     if (server.args && server.args.length > 0) {
-      const argsStr = server.args.map((arg) => `"${arg}"`).join(", ")
+      const argsStr = server.args.map((arg) => `"${escapeTomlString(arg)}"`).join(", ")
       lines.push(`args = [${argsStr}]`)
     }
 
@@ -59,7 +81,7 @@ function convertMcpForCodex(servers: Record<string, ClaudeMcpServer>): string {
       lines.push("")
       lines.push(`[mcp_servers.${name}.env]`)
       for (const [key, value] of Object.entries(server.env)) {
-        lines.push(`${key} = "${value}"`)
+        lines.push(`${key} = "${escapeTomlString(value)}"`)
       }
     }
 

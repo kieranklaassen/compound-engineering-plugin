@@ -9,6 +9,20 @@ function isValidTarget(value: string): value is "opencode" | "codex" {
   return value === "opencode" || value === "codex"
 }
 
+/** Check if any MCP servers have env vars that might contain secrets */
+function hasPotentialSecrets(mcpServers: Record<string, unknown>): boolean {
+  const sensitivePatterns = /key|token|secret|password|credential|api_key/i
+  for (const server of Object.values(mcpServers)) {
+    const env = (server as { env?: Record<string, string> }).env
+    if (env) {
+      for (const key of Object.keys(env)) {
+        if (sensitivePatterns.test(key)) return true
+      }
+    }
+  }
+  return false
+}
+
 export default defineCommand({
   meta: {
     name: "sync",
@@ -28,12 +42,19 @@ export default defineCommand({
   },
   async run({ args }) {
     if (!isValidTarget(args.target)) {
-      console.error(`Unknown target: ${args.target}. Use 'opencode' or 'codex'.`)
-      process.exit(1)
+      throw new Error(`Unknown target: ${args.target}. Use 'opencode' or 'codex'.`)
     }
 
     const claudeHome = expandHome(args.claudeHome ?? path.join(os.homedir(), ".claude"))
     const config = await loadClaudeHome(claudeHome)
+
+    // Warn about potential secrets in MCP env vars
+    if (hasPotentialSecrets(config.mcpServers)) {
+      console.warn(
+        "⚠️  Warning: MCP servers contain env vars that may include secrets (API keys, tokens).\n" +
+        "   These will be copied to the target config. Review before sharing the config file.",
+      )
+    }
 
     console.log(
       `Syncing ${config.skills.length} skills, ${Object.keys(config.mcpServers).length} MCP servers...`,
