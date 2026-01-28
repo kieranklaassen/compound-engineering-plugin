@@ -6,9 +6,9 @@ AI-powered development tools that get smarter with every use. Make each unit of 
 
 | Component | Count |
 |-----------|-------|
-| Agents | 27 |
-| Commands | 20 |
-| Skills | 14 |
+| Agents | 28 |
+| Commands | 25 |
+| Skills | 15 |
 | MCP Servers | 1 |
 
 ## Agents
@@ -90,6 +90,7 @@ Core workflow commands use `workflows:` prefix to avoid collisions with built-in
 | `/create-agent-skill` | Create or edit Claude Code skills |
 | `/generate_command` | Generate new slash commands |
 | `/heal-skill` | Fix skill documentation issues |
+| `/compound-engineering-setup` | Configure plugin agents and preferences |
 | `/plan_review` | Multi-agent plan review in parallel |
 | `/report-bug` | Report a bug in the plugin |
 | `/reproduce-bug` | Reproduce bugs using logs and console |

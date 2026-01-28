@@ -5,6 +5,61 @@ All notable changes to the compound-engineering plugin will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.29.1] - 2026-01-28
+
+### Improved
+
+- **`/workflows:brainstorm` command** - Better question flow
+  - Added "Ask more questions" option at handoff phase
+  - Clarified that Claude should ask the user questions (not wait for user to ask)
+  - Added requirement to resolve ALL open questions before offering to proceed to planning
+
+---
+
+## [2.29.0] - 2026-01-25
+
+### Added
+
+- **`/compound-engineering-setup` command** - Configure plugin agents and preferences
+  - Multi-step onboarding with AskUserQuestion for easy setup
+  - Auto-detects project type (Rails, Python, TypeScript, etc.)
+  - Three setup modes: Quick (smart defaults), Advanced (manual selection), Minimal
+  - Creates `.claude/compound-engineering.json` config file
+  - Supports global config (`~/.claude/`) or project-specific (`.claude/`)
+  - **Custom agent discovery**: Auto-detects agents in `.claude/agents/` and `~/.claude/agents/`
+  - **Modify flow**: Re-run setup to add/remove agents from existing config
+  - **Custom agent guide**: Instructions for creating your own review agents
+
+### Changed
+
+- **`/workflows:review`** - Now reads review agents from config file instead of hardcoding
+- **`/plan_review`** - Now reads plan review agents from config file
+- **`/workflows:work`** - References config for optional reviewer agents
+- **`/workflows:compound`** - References config for specialized agent invocation
+
+### Configuration
+
+New config file format (`.claude/compound-engineering.json`):
+```json
+{
+  "version": "1.0",
+  "projectType": "rails",
+  "reviewAgents": ["kieran-rails-reviewer", "code-simplicity-reviewer", "my-custom-reviewer"],
+  "planReviewAgents": ["kieran-rails-reviewer", "code-simplicity-reviewer"],
+  "customAgents": {
+    "my-custom-reviewer": ".claude/agents/my-custom-reviewer.md"
+  },
+  "conditionalAgents": {
+    "migrations": ["data-migration-expert", "deployment-verification-agent"],
+    "frontend": ["julik-frontend-races-reviewer"],
+    "architecture": ["architecture-strategist"],
+    "data": ["data-integrity-guardian"]
+  }
+}
+```
+
+---
+
 ## [2.28.0] - 2026-01-21
 
 ### Added

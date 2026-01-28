@@ -62,12 +62,14 @@ This command launches multiple specialized subagents IN PARALLEL to maximize eff
    - Creates the file in correct location
 
 ### 7. **Optional: Specialized Agent Invocation** (Post-Documentation)
-   Based on problem type detected, automatically invoke applicable agents:
-   - **performance_issue** → `performance-oracle`
-   - **security_issue** → `security-sentinel`
-   - **database_issue** → `data-integrity-guardian`
-   - **test_failure** → `cora-test-reviewer`
-   - Any code-heavy issue → `kieran-rails-reviewer` + `code-simplicity-reviewer`
+   Based on problem type detected, invoke agents from `.claude/compound-engineering.json` config:
+   - **performance_issue** → `performance-oracle` (if configured)
+   - **security_issue** → `security-sentinel` (if configured)
+   - **database_issue** → `data-integrity-guardian` (if in `conditionalAgents.data`)
+   - **test_failure** → test reviewer (if configured)
+   - Any code-heavy issue → agents from `reviewAgents` + `code-simplicity-reviewer`
+
+   **Note:** If no config exists, use project-appropriate defaults or prompt to run `/compound-engineering-setup`.
 
 ## What It Captures
 
@@ -174,17 +176,18 @@ Build → Test → Find Issue → Research → Improve → Document → Validate
 
 ## Applicable Specialized Agents
 
-Based on problem type, these agents can enhance documentation:
+Based on problem type, agents from `.claude/compound-engineering.json` config enhance documentation.
 
-### Code Quality & Review
-- **kieran-rails-reviewer**: Reviews code examples for Rails best practices
+**Configure via:** `/compound-engineering-setup`
+
+### Code Quality & Review (from `reviewAgents`)
+- Language-specific reviewer (e.g., `kieran-rails-reviewer`, `kieran-python-reviewer`)
 - **code-simplicity-reviewer**: Ensures solution code is minimal and clear
 - **pattern-recognition-specialist**: Identifies anti-patterns or repeating issues
 
-### Specific Domain Experts
+### Specific Domain Experts (from `conditionalAgents`)
 - **performance-oracle**: Analyzes performance_issue category solutions
 - **security-sentinel**: Reviews security_issue solutions for vulnerabilities
-- **cora-test-reviewer**: Creates test cases for prevention strategies
 - **data-integrity-guardian**: Reviews database_issue migrations and queries
 
 ### Enhancement & Documentation
@@ -193,7 +196,7 @@ Based on problem type, these agents can enhance documentation:
 - **framework-docs-researcher**: Links to Rails/gem documentation references
 
 ### When to Invoke
-- **Auto-triggered** (optional): Agents can run post-documentation for enhancement
+- **Auto-triggered** (optional): Agents from config run post-documentation for enhancement
 - **Manual trigger**: User can invoke agents after /workflows:compound completes for deeper review
 
 ## Related Commands

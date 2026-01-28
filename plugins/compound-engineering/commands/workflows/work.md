@@ -175,19 +175,34 @@ This command takes a work document (plan, specification, or todo file) and execu
 
 2. **Consider Reviewer Agents** (Optional)
 
-   Use for complex, risky, or large changes:
+   Use for complex, risky, or large changes. Agents are configured via `.claude/compound-engineering.json`.
 
-   - **code-simplicity-reviewer**: Check for unnecessary complexity
-   - **kieran-rails-reviewer**: Verify Rails conventions (Rails projects)
-   - **performance-oracle**: Check for performance issues
-   - **security-sentinel**: Scan for security vulnerabilities
-   - **cora-test-reviewer**: Review test quality (Rails projects with comprehensive test coverage)
+   **If config exists:** Use agents from `reviewAgents` array.
+
+   **If no config exists and user wants reviewers:**
+   ```
+   AskUserQuestion:
+     questions:
+       - question: "No config found. Set up review agents now?"
+         header: "Setup"
+         options:
+           - label: "Quick Setup (Recommended)"
+             description: "Create config with smart defaults for your project type"
+           - label: "Skip - Use defaults this time"
+             description: "Use general defaults without saving"
+   ```
+
+   **Default agents by project type:**
+   - **Rails**: `kieran-rails-reviewer`, `code-simplicity-reviewer`
+   - **Python**: `kieran-python-reviewer`, `code-simplicity-reviewer`
+   - **TypeScript**: `kieran-typescript-reviewer`, `code-simplicity-reviewer`
+   - **General**: `code-simplicity-reviewer`, `security-sentinel`
 
    Run reviewers in parallel with Task tool:
 
    ```
-   Task(code-simplicity-reviewer): "Review changes for simplicity"
-   Task(kieran-rails-reviewer): "Check Rails conventions"
+   Task({configured-agent}): "Review changes"
+   Task(code-simplicity-reviewer): "Review for simplicity"
    ```
 
    Present findings to user and address critical issues.
