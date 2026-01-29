@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **New Agent: `file-todos`** - Manage the file-based todo tracking system
 - **New Agent: `skill-creator`** - Guide for modularizing capabilities into self-contained skills
 
+### Fixed
+
+- **`/lfg` command** - Fixed broken command references and Ralph-Wiggum namespace typos for OpenCode users (#126)
+- **CORA Cleanup** - Removed remaining hardcoded CORA references in schemas and commands (#127)
+- **Agent Rename** - `cora-test-reviewer` renamed to `test-quality-reviewer` for consistency
+
 ### Summary
 
 - 37 agents, 24 commands, 15 skills, 1 MCP server
