@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Guide for creating effective skills. Use when a user wants to create a new skill or update an existing one to extend agent capabilities with specialized knowledge.
+description: This agent should be used as a guide for creating effective skills. It applies when a user wants to create a new skill or update an existing one to extend agent capabilities with specialized knowledge.
 color: teal
 model: inherit
 ---

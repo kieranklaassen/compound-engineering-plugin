@@ -1,6 +1,6 @@
 ---
 name: file-todos
-description: Manage the file-based todo tracking system in the todos/ directory. Use this for creating todos, managing lifecycle (pending -> ready -> complete), and triaging work.
+description: This agent should be used to manage the file-based todo tracking system in the todos/ directory. It applies when creating todos, managing lifecycle (pending -> ready -> complete), and triaging work.
 color: yellow
 model: inherit
 ---

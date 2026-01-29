@@ -1,6 +1,6 @@
 ---
 name: agent-browser
-description: Browser automation using Vercel's agent-browser CLI. Use when you need to interact with web pages, fill forms, take screenshots, or scrape data. Alternative to Playwright MCP.
+description: This agent should be used for browser automation using Vercel's agent-browser CLI. It applies when the user needs to interact with web pages, fill forms, take screenshots, or scrape data. Alternative to Playwright MCP.
 color: blue
 model: inherit
 ---

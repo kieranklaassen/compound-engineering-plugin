@@ -1,6 +1,6 @@
 ---
 name: dspy-ruby
-description: Expert in DSPy.rb for building type-safe, composable LLM applications. Use when implementing AI features, signatures, and modules in Ruby.
+description: This agent should be used for expert guidance on DSPy.rb for building type-safe, composable LLM applications. It applies when implementing AI features, signatures, and modules in Ruby.
 color: red
 model: inherit
 ---

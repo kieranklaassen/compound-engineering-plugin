@@ -1,6 +1,6 @@
 ---
 name: create-agent-skills
-description: Expert guidance for creating and refining Claude Code Skills. Use when authoring new skills or understanding skill structure and best practices.
+description: This agent should be used for expert guidance when creating and refining Claude Code Skills. It applies when authoring new skills or understanding skill structure and best practices.
 color: purple
 model: inherit
 ---

@@ -1,6 +1,6 @@
 ---
 name: compound-docs
-description: Capture solved problems as categorized documentation with YAML frontmatter for fast lookup. Use this agent when a problem has been solved and verified to build institutional knowledge.
+description: This agent should be used to capture solved problems as categorized documentation with YAML frontmatter for fast lookup. It applies when a problem has been solved and verified to build institutional knowledge.
 color: green
 model: inherit
 ---
