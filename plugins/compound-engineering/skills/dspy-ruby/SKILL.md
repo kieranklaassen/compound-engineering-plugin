@@ -42,7 +42,7 @@ class EmailClassificationSignature < DSPy::Signature
 end
 ```
 
-**Templates**: See `assets/signature-template.rb` for comprehensive examples including:
+**Templates**: See [signature-template.rb](./assets/signature-template.rb) for comprehensive examples including:
 - Basic signatures with multiple field types
 - Vision signatures for multimodal tasks
 - Sentiment analysis signatures
@@ -54,7 +54,7 @@ end
 - Include field descriptions with `desc:` parameter
 - Prefer specific types over generic String when possible
 
-**Full documentation**: See `references/core-concepts.md` sections on Signatures and Type Safety.
+**Full documentation**: See [core-concepts.md](./references/core-concepts.md) sections on Signatures and Type Safety.
 
 ### 2. Composable Modules
 
@@ -79,7 +79,7 @@ class EmailProcessor < DSPy::Module
 end
 ```
 
-**Templates**: See `assets/module-template.rb` for comprehensive examples including:
+**Templates**: See [module-template.rb](./assets/module-template.rb) for comprehensive examples including:
 - Basic modules with single predictors
 - Multi-step pipelines that chain modules
 - Modules with conditional logic
@@ -105,7 +105,7 @@ class Pipeline < DSPy::Module
 end
 ```
 
-**Full documentation**: See `references/core-concepts.md` sections on Modules and Module Composition.
+**Full documentation**: See [core-concepts.md](./references/core-concepts.md) sections on Modules and Module Composition.
 
 ### 3. Multiple Predictor Types
 
@@ -145,7 +145,7 @@ result = predictor.forward(task: "Calculate factorial of 5")
 - **ReAct**: Tasks requiring external tools (search, calculation, API calls)
 - **CodeAct**: Tasks best solved with generated code
 
-**Full documentation**: See `references/core-concepts.md` section on Predictors.
+**Full documentation**: See [core-concepts.md](./references/core-concepts.md) section on Predictors.
 
 ### 4. LLM Provider Configuration
 
@@ -177,7 +177,7 @@ DSPy.configure do |c|
 end
 ```
 
-**Templates**: See `assets/config-template.rb` for comprehensive examples including:
+**Templates**: See [config-template.rb](./assets/config-template.rb) for comprehensive examples including:
 - Environment-based configuration
 - Multi-model setups for different tasks
 - Configuration with observability (OpenTelemetry, Langfuse)
@@ -200,7 +200,7 @@ end
 - Production simple tasks: gpt-4o-mini, claude-3-haiku, gemini-1.5-flash
 - Production complex tasks: gpt-4o, claude-3-5-sonnet, gemini-1.5-pro
 
-**Full documentation**: See `references/providers.md` for all configuration options, provider-specific features, and troubleshooting.
+**Full documentation**: See [providers.md](./references/providers.md) for all configuration options, provider-specific features, and troubleshooting.
 
 ### 5. Multimodal & Vision Support
 
@@ -245,7 +245,7 @@ DSPy::Image.from_base64(base64_data, mime_type: "image/jpeg")
 - Anthropic, Gemini: Base64 or file loading only
 - Ollama: Limited multimodal depending on model
 
-**Full documentation**: See `references/core-concepts.md` section on Multimodal Support.
+**Full documentation**: See [core-concepts.md](./references/core-concepts.md) section on Multimodal Support.
 
 ### 6. Testing LLM Applications
 
@@ -281,7 +281,7 @@ end
 - Test edge cases (empty inputs, special characters, long texts)
 - Integration test complete workflows
 
-**Full documentation**: See `references/optimization.md` section on Testing.
+**Full documentation**: See [optimization.md](./references/optimization.md) section on Testing.
 
 ### 7. Optimization & Improvement
 
@@ -324,7 +324,7 @@ approach_a_score = evaluate_approach(ChainOfThoughtModule, test_set)
 approach_b_score = evaluate_approach(ReActModule, test_set)
 ```
 
-**Full documentation**: See `references/optimization.md` section on Optimization.
+**Full documentation**: See [optimization.md](./references/optimization.md) section on Optimization.
 
 ### 8. Observability & Monitoring
 
@@ -361,7 +361,7 @@ end
 - Error rate tracking
 - Custom logging
 
-**Full documentation**: See `references/optimization.md` section on Observability.
+**Full documentation**: See [optimization.md](./references/optimization.md) section on Observability.
 
 ## Quick Start Workflow
 
@@ -372,7 +372,7 @@ end
 gem install dspy dspy-openai  # or dspy-anthropic, dspy-gemini
 ```
 
-2. **Configure LLM provider** (see `assets/config-template.rb`):
+2. **Configure LLM provider** (see [config-template.rb](./assets/config-template.rb)):
 ```ruby
 require 'dspy'
 
@@ -382,7 +382,7 @@ DSPy.configure do |c|
 end
 ```
 
-3. **Create a signature** (see `assets/signature-template.rb`):
+3. **Create a signature** (see [signature-template.rb](./assets/signature-template.rb)):
 ```ruby
 class MySignature < DSPy::Signature
   description "Clear description of task"
@@ -397,7 +397,7 @@ class MySignature < DSPy::Signature
 end
 ```
 
-4. **Create a module** (see `assets/module-template.rb`):
+4. **Create a module** (see [module-template.rb](./assets/module-template.rb)):
 ```ruby
 class MyModule < DSPy::Module
   def initialize
@@ -418,7 +418,7 @@ result = module_instance.forward(input_field: "test")
 puts result[:output_field]
 ```
 
-6. **Add tests** (see `references/optimization.md`):
+6. **Add tests** (see [optimization.md](./references/optimization.md)):
 ```ruby
 RSpec.describe MyModule do
   it 'produces expected output' do
@@ -436,7 +436,7 @@ gem 'dspy'
 gem 'dspy-openai'  # or other provider
 ```
 
-2. **Create initializer** at `config/initializers/dspy.rb` (see `assets/config-template.rb` for full example):
+2. **Create initializer** at `config/initializers/dspy.rb` (see [config-template.rb](./assets/config-template.rb) for full example):
 ```ruby
 require 'dspy'
 

@@ -1,9 +1,9 @@
 ---
 name: gemini-imagegen
-description: This skill should be used when generating and editing images using the Gemini API (Nano Banana Pro). It applies when creating images from text prompts, editing existing images, applying style transfers, generating logos with text, creating stickers, product mockups, or any image generation/manipulation task. Supports text-to-image, image editing, multi-turn refinement, and composition from multiple reference images.
+description: This skill should be used when generating and editing images using the Gemini API (Gemini 2.0 Pro). It applies when creating images from text prompts, editing existing images, applying style transfers, generating logos with text, creating stickers, product mockups, or any image generation/manipulation task. Supports text-to-image, image editing, multi-turn refinement, and composition from multiple reference images.
 ---
 
-# Gemini Image Generation (Nano Banana Pro)
+# Gemini Image Generation (Gemini 2.0 Pro)
 
 Generate and edit images using Google's Gemini API. The environment variable `GEMINI_API_KEY` must be set.
 

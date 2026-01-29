@@ -6,7 +6,7 @@ AI-powered development tools that get smarter with every use. Make each unit of 
 
 | Component | Count |
 |-----------|-------|
-| Agents | 37 |
+| Agents | 36 |
 | Commands | 24 |
 | Skills | 15 |
 | MCP Servers | 1 |
@@ -54,20 +54,19 @@ Agents are organized into categories for easier discovery.
 | `frontend-design` | Create distinctive, production-grade frontend interfaces |
 | `gemini-imagegen` | Generate and edit images using the Gemini API |
 
-### Workflow (11)
+### Workflow (10)
 
 | Agent | Description |
 |-------|-------------|
 | `agent-browser` | Browser automation using Vercel's agent-browser CLI |
 | `brainstorming` | Clarify requirements and explore approaches before implementation |
 | `bug-reproduction-validator` | Systematically reproduce and validate bug reports |
-| `create-agent-skills` | Expert guidance for creating and refining Claude Code Skills |
 | `dspy-ruby` | Expert in DSPy.rb for building type-safe LLM applications |
 | `every-style-editor` | Edit content to conform to Every's style guide |
 | `file-todos` | Manage the file-based todo tracking system |
 | `lint` | Run linting and code quality checks on Ruby and ERB files |
 | `pr-comment-resolver` | Address PR comments and implement fixes |
-| `skill-creator` | Guide for creating effective skills |
+| `skill-architect` | Expert guidance for designing and creating Claude Code Skills |
 | `spec-flow-analyzer` | Analyze user flows and identify gaps in specifications |
 
 ### Docs (2)

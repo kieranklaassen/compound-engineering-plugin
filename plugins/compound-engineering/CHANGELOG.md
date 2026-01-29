@@ -9,25 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **New Agent: `skill-architect`** - Expert guidance for designing and creating Claude Code Skills
 - **New Agent: `frontend-design`** - Create production-grade frontend interfaces with high design quality
-- **New Agent: `gemini-imagegen`** - Generate and edit images using the Gemini API (Nano Banana Pro)
+- **New Agent: `gemini-imagegen`** - Generate and edit images using the Gemini API (Gemini 2.0 Pro)
 - **New Agent: `compound-docs`** - Capture solved problems as documentation with YAML frontmatter
 - **New Agent: `agent-browser`** - Browser automation using Vercel's agent-browser CLI
 - **New Agent: `brainstorming`** - Guided ideation flow to clarify intent before implementation
-- **New Agent: `create-agent-skills`** - Expert guidance for creating and refining Claude Code skills
 - **New Agent: `dspy-ruby`** - Build type-safe LLM applications with DSPy.rb
 - **New Agent: `file-todos`** - Manage the file-based todo tracking system
-- **New Agent: `skill-creator`** - Guide for modularizing capabilities into self-contained skills
-
-### Fixed
-
-- **`/lfg` command** - Fixed broken command references and Ralph-Wiggum namespace typos for OpenCode users (#126)
-- **CORA Cleanup** - Removed remaining hardcoded CORA references in schemas and commands (#127)
-- **Agent Rename** - `cora-test-reviewer` renamed to `test-quality-reviewer` for consistency
 
 ### Summary
 
-- 37 agents, 24 commands, 15 skills, 1 MCP server
+- 36 agents, 24 commands, 15 skills, 1 MCP server
 
 ---
 

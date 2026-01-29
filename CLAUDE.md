@@ -17,9 +17,9 @@ every-marketplace/
     └── compound-engineering/   # The actual plugin
         ├── .claude-plugin/
         │   └── plugin.json        # Plugin metadata
-        ├── agents/                # 24 specialized AI agents
-        ├── commands/              # 13 slash commands
-        ├── skills/                # 11 skills
+        ├── agents/                # 36 specialized AI agents
+        ├── commands/              # 24 slash commands
+        ├── skills/                # 15 skills
         ├── mcp-servers/           # 2 MCP servers (playwright, context7)
         ├── README.md              # Plugin documentation
         └── CHANGELOG.md           # Version history
