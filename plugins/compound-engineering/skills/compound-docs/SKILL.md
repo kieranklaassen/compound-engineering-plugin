@@ -186,7 +186,7 @@ DOC_PATH="docs/solutions/${CATEGORY}/${FILENAME}"
 # Create directory if needed
 mkdir -p "docs/solutions/${CATEGORY}"
 
-# Write documentation using template from assets/resolution-template.md
+# Write documentation using template from [resolution-template.md](./assets/resolution-template.md)
 # (Content populated with Step 2 context and validated YAML frontmatter)
 ```
 
@@ -194,7 +194,7 @@ mkdir -p "docs/solutions/${CATEGORY}"
 - Single file in category directory
 - Enum validation ensures consistent categorization
 
-**Create documentation:** Populate the structure from `assets/resolution-template.md` with context gathered in Step 2 and validated YAML frontmatter from Step 5.
+**Create documentation:** Populate the structure from [resolution-template.md](./assets/resolution-template.md) with context gathered in Step 2 and validated YAML frontmatter from Step 5.
 </step>
 
 <step number="7" required="false" depends_on="6">
@@ -249,7 +249,7 @@ But **NEVER auto-promote**. User decides via decision menu (Option 2).
 
 **Template for critical pattern addition:**
 
-When user selects Option 2 (Add to Required Reading), use the template from `assets/critical-pattern-template.md` to structure the pattern entry. Number it sequentially based on existing patterns in `docs/solutions/patterns/critical-patterns.md`.
+When user selects Option 2 (Add to Required Reading), use the template from [critical-pattern-template.md](./assets/critical-pattern-template.md) to structure the pattern entry. Number it sequentially based on existing patterns in `docs/solutions/patterns/critical-patterns.md`.
 </step>
 
 </critical_sequence>
