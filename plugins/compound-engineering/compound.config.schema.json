@@ -1,30 +1,49 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Compound Engineering Plugin Config",
-  "description": "Configuration for selective component loading in the compound-engineering plugin",
+  "title": "Compound Engineering Plugin Configuration",
+  "description": "Configuration for compound-engineering plugin component selection",
   "type": "object",
-  "properties": {
-    "description": {
-      "type": "string",
-      "description": "Optional description of this configuration"
+  "oneOf": [
+    {
+      "title": "Bundle-based configuration (v2.0)",
+      "properties": {
+        "$schema": { "type": "string" },
+        "version": { "const": "2.0" },
+        "description": { "type": "string" },
+        "bundles": {
+          "type": "object",
+          "properties": {
+            "ruby-rails": { "type": "boolean" },
+            "ruby-gems": { "type": "boolean" },
+            "python": { "type": "boolean" },
+            "typescript": { "type": "boolean" },
+            "data-migrations": { "type": "boolean" },
+            "browser-automation": { "type": "boolean" },
+            "frontend-design": { "type": "boolean" },
+            "figma": { "type": "boolean" },
+            "agent-native-dev": { "type": "boolean" },
+            "plugin-dev": { "type": "boolean" },
+            "every-style": { "type": "boolean" },
+            "ios-xcode": { "type": "boolean" },
+            "utilities": { "type": "boolean" }
+          },
+          "additionalProperties": { "type": "boolean" }
+        }
+      },
+      "required": ["version", "bundles"]
     },
-    "agents": {
-      "$ref": "#/definitions/componentConfig",
-      "description": "Configure which agents to load"
-    },
-    "commands": {
-      "$ref": "#/definitions/componentConfig",
-      "description": "Configure which commands to load"
-    },
-    "skills": {
-      "$ref": "#/definitions/componentConfig",
-      "description": "Configure which skills to load"
-    },
-    "mcpServers": {
-      "$ref": "#/definitions/componentConfig",
-      "description": "Configure which MCP servers to enable"
+    {
+      "title": "Legacy configuration (v1.0)",
+      "properties": {
+        "$schema": { "type": "string" },
+        "description": { "type": "string" },
+        "agents": { "$ref": "#/definitions/componentConfig" },
+        "commands": { "$ref": "#/definitions/componentConfig" },
+        "skills": { "$ref": "#/definitions/componentConfig" },
+        "mcpServers": { "$ref": "#/definitions/componentConfig" }
+      }
     }
-  },
+  ],
   "definitions": {
     "componentConfig": {
       "type": "object",
@@ -32,16 +51,14 @@
         "enabled": {
           "type": "array",
           "items": { "type": "string" },
-          "description": "Components to enable. Use ['*'] for all, or list specific names."
+          "description": "Components to enable. Use ['*'] for all."
         },
         "disabled": {
           "type": "array",
           "items": { "type": "string" },
-          "description": "Components to disable. Takes precedence over enabled."
+          "description": "Components to disable (applied after enabled)."
         }
-      },
-      "additionalProperties": false
+      }
     }
-  },
-  "additionalProperties": false
+  }
 }

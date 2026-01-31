@@ -2,13 +2,18 @@
 # frozen_string_literal: true
 
 # Build script for compound-engineering plugin
-# Reads compound.config.json and copies only enabled components to output directories
+# Reads bundle configuration and copies enabled components to output directories
+#
+# Supports two config formats:
+# 1. Bundle-based (v2.0): bundles.enabled = { "ruby-rails" => true, ... }
+# 2. Legacy (v1.0): agents.enabled/disabled, commands.enabled/disabled, etc.
 
 require "json"
 require "fileutils"
 
 PLUGIN_ROOT = File.expand_path("..", __dir__)
 SOURCE_DIR = File.join(PLUGIN_ROOT, "_source")
+BUNDLES_FILE = File.join(PLUGIN_ROOT, "bundles.json")
 CONFIG_FILE = File.join(PLUGIN_ROOT, "compound.config.json")
 
 COMPONENT_TYPES = {
@@ -17,28 +22,133 @@ COMPONENT_TYPES = {
   "skills" => { source: "skills", pattern: "*", type: :directory }
 }.freeze
 
+# Load bundle definitions
+def load_bundles
+  unless File.exist?(BUNDLES_FILE)
+    puts "Warning: bundles.json not found, using legacy mode"
+    return nil
+  end
+  JSON.parse(File.read(BUNDLES_FILE))
+end
+
+# Load user config
 def load_config
   unless File.exist?(CONFIG_FILE)
     puts "Config file not found: #{CONFIG_FILE}"
-    puts "Creating default config with all components enabled..."
+    puts "Creating default config with all bundles enabled..."
     create_default_config
   end
-
   JSON.parse(File.read(CONFIG_FILE))
 end
 
+# Detect config format version
+def config_version(config)
+  return "2.0" if config["version"] == "2.0" || config["bundles"]
+  "1.0" # Legacy format
+end
+
+# Create default bundle-based config
 def create_default_config
-  config = {
-    "description" => "Configure which components load into Claude Code context.",
-    "agents" => { "enabled" => ["*"], "disabled" => [] },
-    "commands" => { "enabled" => ["*"], "disabled" => [] },
-    "skills" => { "enabled" => ["*"], "disabled" => [] },
-    "mcpServers" => { "enabled" => ["*"], "disabled" => [] }
-  }
+  bundles = load_bundles
+
+  if bundles
+    # New bundle-based config
+    bundle_defaults = {}
+    bundles["bundles"].each do |name, bundle|
+      next if bundle["always_on"]
+      bundle_defaults[name] = bundle["default"] != false
+    end
+
+    config = {
+      "version" => "2.0",
+      "description" => "Bundle-based configuration for compound-engineering plugin",
+      "bundles" => bundle_defaults
+    }
+  else
+    # Fallback to legacy format
+    config = {
+      "description" => "Configure which components load into Claude Code context.",
+      "agents" => { "enabled" => ["*"], "disabled" => [] },
+      "commands" => { "enabled" => ["*"], "disabled" => [] },
+      "skills" => { "enabled" => ["*"], "disabled" => [] },
+      "mcpServers" => { "enabled" => ["*"], "disabled" => [] }
+    }
+  end
+
   File.write(CONFIG_FILE, JSON.pretty_generate(config))
   config
 end
 
+# Resolve bundle dependencies
+def resolve_dependencies(enabled_bundles, bundles_def)
+  resolved = enabled_bundles.dup
+  changes = []
+
+  # Keep resolving until no more changes
+  loop do
+    added = false
+
+    bundles_def["bundles"].each do |name, bundle|
+      next unless resolved[name]
+      next unless bundle["depends_on"]
+
+      bundle["depends_on"].each do |dep|
+        unless resolved[dep]
+          resolved[dep] = true
+          changes << "  Enabled: #{dep} (dependency of #{name})"
+          added = true
+        end
+      end
+    end
+
+    break unless added
+  end
+
+  [resolved, changes]
+end
+
+# Flatten enabled bundles into component lists
+def flatten_bundles(enabled_bundles, bundles_def)
+  components = {
+    "agents" => [],
+    "commands" => [],
+    "skills" => []
+  }
+
+  bundles_def["bundles"].each do |name, bundle|
+    # Include if always_on or explicitly enabled
+    next unless bundle["always_on"] || enabled_bundles[name]
+
+    components["agents"].concat(bundle["agents"] || [])
+    components["commands"].concat(bundle["commands"] || [])
+    components["skills"].concat(bundle["skills"] || [])
+  end
+
+  # Remove duplicates
+  components.each { |_, list| list.uniq! }
+  components
+end
+
+# Get enabled bundles from config
+def get_enabled_bundles(config, bundles_def)
+  bundle_config = config["bundles"] || {}
+  enabled = {}
+
+  bundles_def["bundles"].each do |name, bundle|
+    if bundle["always_on"]
+      enabled[name] = true
+    elsif bundle_config.key?(name)
+      enabled[name] = bundle_config[name]
+    else
+      # Use default
+      enabled[name] = bundle["default"] != false && bundle["default"] != "ask"
+    end
+  end
+
+  enabled
+end
+
+# Legacy: get available components
 def available_components(type, options)
   source_path = File.join(SOURCE_DIR, options[:source])
   return [] unless File.directory?(source_path)
@@ -49,27 +159,39 @@ def available_components(type, options)
        .map { |f| File.basename(f) }
   else
     Dir.glob(File.join(source_path, options[:pattern]))
-       .map { |f| File.basename(f, ".md") }
+       .map { |f| f.sub("#{source_path}/", "").sub(/\.md$/, "") }
        .uniq
   end
 end
 
-def enabled_components(type, config, options)
+# Legacy: get enabled components from old config format
+def enabled_components_legacy(type, config, options)
   available = available_components(type, options)
   settings = config[type] || { "enabled" => ["*"], "disabled" => [] }
 
   enabled = settings["enabled"] || ["*"]
   disabled = settings["disabled"] || []
 
-  # If enabled includes "*", start with all available
   result = if enabled.include?("*")
              available
            else
              available & enabled
            end
 
-  # Remove disabled components
   result - disabled
+end
+
+# Check if component path exists in source
+def component_exists?(type, name)
+  source_base = File.join(SOURCE_DIR, type)
+
+  if type == "skills"
+    File.directory?(File.join(source_base, name))
+  else
+    # Check both flat and nested paths
+    Dir.glob(File.join(source_base, "**", "#{File.basename(name)}.md")).any? ||
+    File.exist?(File.join(source_base, "#{name}.md"))
+  end
 end
 
 def clean_output_dirs
@@ -87,16 +209,37 @@ def copy_component(type, name, options)
     # Skills: copy entire directory
     source_path = File.join(source_base, name)
     output_path = File.join(output_base, name)
+
+    unless File.directory?(source_path)
+      puts "  Warning: skill not found: #{name}"
+      return false
+    end
+
     FileUtils.mkdir_p(output_path)
     FileUtils.cp_r("#{source_path}/.", output_path)
+    true
   else
     # Agents/Commands: find and copy .md files, preserving subdirectory structure
-    Dir.glob(File.join(source_base, "**", "#{name}.md")).each do |source_file|
+    # Support both "name" and "category/name" formats
+    search_name = File.basename(name)
+    found = false
+
+    Dir.glob(File.join(source_base, "**", "#{search_name}.md")).each do |source_file|
+      # If name includes path (e.g., "review/kieran-rails-reviewer"), verify it matches
+      if name.include?("/")
+        relative = source_file.sub("#{source_base}/", "").sub(/\.md$/, "")
+        next unless relative == name
+      end
+
       relative_path = source_file.sub("#{source_base}/", "")
       output_file = File.join(output_base, relative_path)
       FileUtils.mkdir_p(File.dirname(output_file))
       FileUtils.cp(source_file, output_file)
+      found = true
     end
+
+    puts "  Warning: #{type.chomp('s')} not found: #{name}" unless found
+    found
   end
 end
 
@@ -134,39 +277,98 @@ def main
   puts
 
   config = load_config
+  bundles_def = load_bundles
+  version = config_version(config)
 
-  # Clean output directories
-  clean_output_dirs
-
-  stats = {}
-
-  COMPONENT_TYPES.each do |type, options|
-    available = available_components(type, options)
-    enabled = enabled_components(type, config, options)
-
-    stats[type] = { available: available.size, enabled: enabled.size }
-
-    puts "#{type.capitalize}:"
-    puts "  Available: #{available.size}"
-    puts "  Enabled: #{enabled.size}"
-
-    if enabled.empty?
-      puts "  (none enabled)"
-    else
-      enabled.each { |name| copy_component(type, name, options) }
-      puts "  Copied: #{enabled.join(", ")}" if enabled.size <= 10
-      puts "  Copied: #{enabled.size} components" if enabled.size > 10
-    end
+  if version == "2.0" && bundles_def
+    puts "Using bundle-based configuration (v2.0)"
     puts
+
+    # Get enabled bundles
+    enabled_bundles = get_enabled_bundles(config, bundles_def)
+
+    # Resolve dependencies
+    resolved_bundles, dep_changes = resolve_dependencies(enabled_bundles, bundles_def)
+
+    if dep_changes.any?
+      puts "Dependency resolution:"
+      dep_changes.each { |change| puts change }
+      puts
+    end
+
+    # Show enabled bundles
+    always_on = resolved_bundles.select { |name, _| bundles_def["bundles"][name]["always_on"] }.keys
+    user_enabled = resolved_bundles.select { |name, enabled| enabled && !bundles_def["bundles"][name]["always_on"] }.keys
+    user_disabled = resolved_bundles.select { |name, enabled| !enabled }.keys
+
+    puts "Bundles:"
+    puts "  Always on: #{always_on.join(", ")}"
+    puts "  Enabled: #{user_enabled.join(", ")}" if user_enabled.any?
+    puts "  Disabled: #{user_disabled.join(", ")}" if user_disabled.any?
+    puts
+
+    # Flatten to component lists
+    components = flatten_bundles(resolved_bundles, bundles_def)
+
+    # Clean and copy
+    clean_output_dirs
+
+    stats = {}
+    COMPONENT_TYPES.each do |type, options|
+      available = available_components(type, options)
+      enabled = components[type] || []
+
+      # Filter to only existing components
+      enabled = enabled.select { |name| component_exists?(type, name) || component_exists?(type, File.basename(name)) }
+
+      stats[type] = { available: available.size, enabled: enabled.size }
+
+      puts "#{type.capitalize}:"
+      puts "  Available: #{available.size}"
+      puts "  Enabled: #{enabled.size}"
+
+      copied = 0
+      enabled.each do |name|
+        copied += 1 if copy_component(type, name, options)
+      end
+      puts "  Copied: #{copied} components"
+      puts
+    end
+  else
+    puts "Using legacy configuration (v1.0)"
+    puts
+
+    # Legacy mode - use old logic
+    clean_output_dirs
+
+    stats = {}
+    COMPONENT_TYPES.each do |type, options|
+      available = available_components(type, options)
+      enabled = enabled_components_legacy(type, config, options)
+
+      stats[type] = { available: available.size, enabled: enabled.size }
+
+      puts "#{type.capitalize}:"
+      puts "  Available: #{available.size}"
+      puts "  Enabled: #{enabled.size}"
+
+      if enabled.empty?
+        puts "  (none enabled)"
+      else
+        enabled.each { |name| copy_component(type, File.basename(name), options) }
+        puts "  Copied: #{enabled.size} components"
+      end
+      puts
+    end
   end
 
-  # Handle MCP servers
+  # Handle MCP servers (same for both versions)
   build_plugin_json(config)
 
   mcp_config = config["mcpServers"] || { "enabled" => ["*"], "disabled" => [] }
   puts "MCP Servers:"
-  puts "  Enabled: #{mcp_config["enabled"].join(", ")}"
-  puts "  Disabled: #{mcp_config["disabled"].join(", ")}" unless mcp_config["disabled"].empty?
+  puts "  Enabled: #{mcp_config["enabled"]&.join(", ") || "*"}"
+  puts "  Disabled: #{mcp_config["disabled"]&.join(", ")}" if mcp_config["disabled"]&.any?
   puts
 
   total_enabled = stats.values.sum { |s| s[:enabled] }

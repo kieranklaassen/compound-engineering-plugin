@@ -1,0 +1,231 @@
+{
+  "$schema": "./bundles.schema.json",
+  "version": "1.0",
+  "bundles": {
+    "core": {
+      "always_on": true,
+      "description": "Essential workflow commands and research agents",
+      "agents": [
+        "research/repo-research-analyst",
+        "research/learnings-researcher"
+      ],
+      "commands": [
+        "workflows/plan",
+        "workflows/review",
+        "workflows/work",
+        "workflows/compound",
+        "workflows/brainstorm"
+      ],
+      "skills": [
+        "compound-docs",
+        "brainstorming",
+        "git-worktree"
+      ]
+    },
+    "code-review": {
+      "always_on": true,
+      "description": "General code review agents",
+      "agents": [
+        "review/architecture-strategist",
+        "review/code-simplicity-reviewer",
+        "review/pattern-recognition-specialist",
+        "review/performance-oracle",
+        "review/security-sentinel"
+      ]
+    },
+    "research": {
+      "always_on": true,
+      "description": "Research and deep planning tools",
+      "agents": [
+        "research/best-practices-researcher",
+        "research/framework-docs-researcher",
+        "research/git-history-analyzer",
+        "workflow/spec-flow-analyzer"
+      ],
+      "commands": [
+        "deepen-plan",
+        "plan_review"
+      ]
+    },
+    "pr-workflow": {
+      "always_on": true,
+      "description": "PR and issue management tools",
+      "agents": [
+        "workflow/pr-comment-resolver"
+      ],
+      "commands": [
+        "resolve_parallel",
+        "resolve_pr_parallel",
+        "resolve_todo_parallel",
+        "triage",
+        "changelog"
+      ]
+    },
+    "fork-tools": {
+      "always_on": true,
+      "description": "Fork-specific sync and configuration tools",
+      "agents": [
+        "workflow/sync-reviewer"
+      ],
+      "commands": [
+        "configure"
+      ],
+      "skills": [
+        "sync-upstream"
+      ]
+    },
+    "ruby-rails": {
+      "default": "ask",
+      "question": "Do you work with Ruby/Rails?",
+      "description": "Ruby and Rails code review and style tools",
+      "agents": [
+        "review/kieran-rails-reviewer",
+        "review/dhh-rails-reviewer",
+        "workflow/lint",
+        "review/julik-frontend-races-reviewer"
+      ],
+      "skills": [
+        "dhh-rails-style"
+      ]
+    },
+    "ruby-gems": {
+      "default": "ask",
+      "question": "Do you write Ruby gems?",
+      "description": "Ruby gem authoring tools (Ankane style)",
+      "agents": [
+        "docs/ankane-readme-writer"
+      ],
+      "skills": [
+        "andrew-kane-gem-writer"
+      ]
+    },
+    "python": {
+      "default": "ask",
+      "question": "Do you work with Python?",
+      "description": "Python code review",
+      "agents": [
+        "review/kieran-python-reviewer"
+      ]
+    },
+    "typescript": {
+      "default": "ask",
+      "question": "Do you work with TypeScript?",
+      "description": "TypeScript code review",
+      "agents": [
+        "review/kieran-typescript-reviewer"
+      ]
+    },
+    "data-migrations": {
+      "default": "ask",
+      "question": "Do you work with database migrations?",
+      "description": "Database migration and data integrity tools",
+      "agents": [
+        "review/data-integrity-guardian",
+        "review/data-migration-expert",
+        "review/deployment-verification-agent"
+      ]
+    },
+    "browser-automation": {
+      "default": "ask",
+      "question": "Need browser automation/testing?",
+      "description": "Browser automation and testing tools",
+      "agents": [
+        "workflow/bug-reproduction-validator"
+      ],
+      "commands": [
+        "test-browser",
+        "reproduce-bug"
+      ],
+      "skills": [
+        "agent-browser"
+      ]
+    },
+    "frontend-design": {
+      "default": "ask",
+      "question": "Want frontend design iteration tools?",
+      "description": "Frontend design refinement and iteration",
+      "depends_on": ["browser-automation"],
+      "agents": [
+        "design/design-iterator"
+      ],
+      "skills": [
+        "frontend-design"
+      ]
+    },
+    "figma": {
+      "default": false,
+      "question": "Do you use Figma?",
+      "description": "Figma design sync and verification",
+      "depends_on": ["browser-automation"],
+      "agents": [
+        "design/figma-design-sync",
+        "design/design-implementation-reviewer"
+      ]
+    },
+    "agent-native-dev": {
+      "default": false,
+      "question": "Building AI-native applications?",
+      "description": "Tools for building apps where agents are first-class citizens",
+      "agents": [
+        "review/agent-native-reviewer"
+      ],
+      "commands": [
+        "agent-native-audit"
+      ],
+      "skills": [
+        "agent-native-architecture"
+      ]
+    },
+    "plugin-dev": {
+      "default": false,
+      "question": "Developing Claude Code plugins?",
+      "description": "Plugin development and documentation tools",
+      "commands": [
+        "create-agent-skill",
+        "generate_command",
+        "heal-skill",
+        "deploy-docs",
+        "release-docs",
+        "report-bug"
+      ],
+      "skills": [
+        "skill-creator",
+        "create-agent-skills"
+      ]
+    },
+    "every-style": {
+      "default": false,
+      "question": "Write content for Every.to?",
+      "description": "Every.to style guide compliance",
+      "agents": [
+        "workflow/every-style-editor"
+      ],
+      "skills": [
+        "every-style-editor"
+      ]
+    },
+    "ios-xcode": {
+      "default": false,
+      "question": "Do iOS/Xcode development?",
+      "description": "iOS and Xcode testing tools",
+      "commands": [
+        "xcode-test"
+      ]
+    },
+    "utilities": {
+      "default": "ask",
+      "question": "Enable utility tools?",
+      "description": "Miscellaneous utility tools",
+      "commands": [
+        "feature-video",
+        "lfg"
+      ],
+      "skills": [
+        "gemini-imagegen",
+        "rclone",
+        "file-todos",
+        "dspy-ruby"
+      ]
+    }
+  }
+}

@@ -5,6 +5,34 @@ All notable changes to the compound-engineering plugin will be documented in thi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.30.0] - 2026-01-31
+
+### Added
+
+- **Bundle-based configuration system** - Group related components by workflow/use case
+  - `bundles.json` - Defines 18 bundles (core, code-review, ruby-rails, python, typescript, etc.)
+  - `bundles.schema.json` - JSON Schema for bundle validation
+  - Supports `always_on`, `default: "ask"`, and `default: false` states
+  - Bundle dependencies (e.g., frontend-design depends on browser-automation)
+
+### Changed
+
+- **`/compound:configure` command** - Now uses interactive bundle selection instead of granular component toggles
+- **`compound.config.json`** - Updated to v2.0 format with bundle-based configuration
+- **`compound.config.schema.json`** - Supports both v1.0 (legacy) and v2.0 (bundle-based) formats
+- **`bin/build`** - Updated to build from bundle configuration
+
+### Security
+
+- **Removed hardcoded Context7 API key** - MCP server now uses unauthenticated access by default
+
+### Summary
+
+- 29 agents, 25 commands, 16 skills, 1 MCP server
+- Bundle system simplifies plugin customization
+
+---
+
 ## [2.29.0] - 2026-01-30
 
 ### Added

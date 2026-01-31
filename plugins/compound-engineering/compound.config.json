@@ -1,20 +1,20 @@
 {
   "$schema": "./compound.config.schema.json",
-  "description": "Default configuration - all components enabled. Run /compound:configure to customize.",
-  "agents": {
-    "enabled": ["*"],
-    "disabled": []
-  },
-  "commands": {
-    "enabled": ["*"],
-    "disabled": []
-  },
-  "skills": {
-    "enabled": ["*"],
-    "disabled": []
-  },
-  "mcpServers": {
-    "enabled": ["*"],
-    "disabled": []
+  "version": "2.0",
+  "description": "Default configuration - all bundles enabled. Run /compound:configure to customize.",
+  "bundles": {
+    "ruby-rails": true,
+    "ruby-gems": true,
+    "python": true,
+    "typescript": true,
+    "data-migrations": true,
+    "browser-automation": true,
+    "frontend-design": true,
+    "figma": true,
+    "agent-native-dev": true,
+    "plugin-dev": true,
+    "every-style": true,
+    "ios-xcode": true,
+    "utilities": true
   }
 }

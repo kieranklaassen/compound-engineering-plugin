@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Compound Engineering Bundles",
+  "description": "Bundle definitions for compound-engineering plugin configuration",
+  "type": "object",
+  "required": ["version", "bundles"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string",
+      "description": "Schema version"
+    },
+    "bundles": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/bundle"
+      }
+    }
+  },
+  "definitions": {
+    "bundle": {
+      "type": "object",
+      "required": ["description"],
+      "properties": {
+        "always_on": {
+          "type": "boolean",
+          "description": "If true, bundle is always enabled and cannot be disabled"
+        },
+        "default": {
+          "oneOf": [
+            { "type": "boolean" },
+            { "type": "string", "enum": ["ask"] }
+          ],
+          "description": "Default state: true (on), false (off), or 'ask' (prompt user)"
+        },
+        "question": {
+          "type": "string",
+          "description": "Question to ask user when default is 'ask'"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the bundle"
+        },
+        "depends_on": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Bundle names that must be enabled for this bundle to work"
+        },
+        "agents": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Agent paths relative to agents/ directory"
+        },
+        "commands": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Command paths relative to commands/ directory"
+        },
+        "skills": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Skill directory names"
+        }
+      }
+    }
+  }
+}

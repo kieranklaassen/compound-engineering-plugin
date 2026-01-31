@@ -1,24 +1,24 @@
 ---
 name: compound:configure
-description: Interactive setup to customize which plugin components load into your context
+description: Interactive setup to customize which plugin bundles load into your context
 ---
 
 # Configure Compound Engineering Plugin
 
-This command customizes compound-engineering to only load the components you need, reducing context window usage by 30-50%. Configuration persists across plugin updates.
+This command customizes compound-engineering using a bundle-based system. Bundles group related components (agents, commands, skills) by workflow, making configuration intuitive and maintainable.
 
 ## How It Works
 
-1. Asks 5 questions about your workflow
-2. Saves preferences to `~/.claude/compound-engineering.config.json`
-3. Rebuilds the installed plugin in-place
-4. On future plugin updates, auto-rebuilds with your saved preferences
+1. Loads bundle definitions from `bundles.json`
+2. Asks questions for each configurable bundle
+3. Resolves dependencies automatically (e.g., Frontend Design enables Browser Automation)
+4. Saves preferences to `~/.claude/compound-engineering.config.json`
+5. Rebuilds the installed plugin with only enabled bundles
 
 ## Prerequisites
 
-This command requires:
 1. The compound-engineering plugin is installed from a marketplace
-2. The installed plugin has the `_source/` directory and `bin/build` script
+2. The installed plugin has `bundles.json`, `_source/` directory, and `bin/build` script
 
 ## Step 1: Find the Installed Plugin
 
@@ -30,7 +30,7 @@ Extract the `installPath` value. Example:
 ```json
 "compound-engineering@every-marketplace": [
   {
-    "installPath": "/Users/username/.claude/plugins/cache/every-marketplace/compound-engineering/2.27.0"
+    "installPath": "/Users/username/.claude/plugins/cache/every-marketplace/compound-engineering/2.29.0"
   }
 ]
 ```
@@ -39,161 +39,202 @@ Save this path as `PLUGIN_PATH` for later steps.
 
 **Verify build infrastructure exists:**
 ```bash
-ls -la PLUGIN_PATH/bin/build && ls -d PLUGIN_PATH/_source/
+ls PLUGIN_PATH/bundles.json && ls PLUGIN_PATH/bin/build && ls -d PLUGIN_PATH/_source/
 ```
 
-If either doesn't exist, tell the user:
-> "Your installed version doesn't support custom configuration. Please update the plugin or install from a marketplace that includes the configuration feature."
+If any doesn't exist, tell the user:
+> "Your installed version doesn't support bundle configuration. Please update the plugin."
 
 Then stop.
 
-## Step 2: Gather User Preferences
+## Step 2: Load Bundle Definitions
 
-Use **AskUserQuestion** to ask these questions ONE AT A TIME:
+Read `PLUGIN_PATH/bundles.json` to get available bundles and their questions.
 
-### Question 1: Primary Language
-**Question:** "What is your primary programming language?"
-**Options:**
-- Ruby/Rails (Recommended for Rails developers)
-- Python
-- TypeScript/JavaScript
-- Multiple languages (keep all reviewers)
+Parse the JSON and identify:
+- **Always-on bundles**: `always_on: true` - these are always enabled, don't ask
+- **Ask bundles**: `default: "ask"` - ask the user
+- **Off-by-default bundles**: `default: false` - group into specialist question
 
-### Question 2: Design Tools
-**Question:** "Do you use Figma for design work?"
-**Options:**
-- Yes, I use Figma
-- No, I don't use Figma
+## Step 3: Gather User Preferences
 
-### Question 3: Browser Automation
-**Question:** "Do you need browser automation capabilities?"
-**Options:**
-- Yes, for testing or automation
-- No, I don't need browser automation
+Use **AskUserQuestion** to ask bundle questions. Ask ONE question at a time.
 
-### Question 4: Image Generation
-**Question:** "Do you need AI image generation (requires Gemini API key)?"
-**Options:**
-- Yes, I have a Gemini API key
-- No, I don't need image generation
+### Language Bundles
 
-### Question 5: Content Editing
-**Question:** "Do you write content that needs Every.to style guide compliance?"
-**Options:**
-- Yes, I write for Every.to
-- No, I don't need Every style editing
+**Question 1:** "Do you work with Ruby/Rails?"
+- Header: "Ruby/Rails"
+- Options: Yes / No
 
-## Step 3: Build the Configuration JSON
+**Question 2:** "Do you write Ruby gems?"
+- Header: "Ruby Gems"
+- Options: Yes / No
 
-Start with this base config:
+**Question 3:** "Do you work with Python?"
+- Header: "Python"
+- Options: Yes / No
+
+**Question 4:** "Do you work with TypeScript?"
+- Header: "TypeScript"
+- Options: Yes / No
+
+### Workflow Bundles
+
+**Question 5:** "Do you work with database migrations?"
+- Header: "Migrations"
+- Options: Yes / No
+
+**Question 6:** "Need browser automation/testing?"
+- Header: "Browser"
+- Options: Yes / No
+
+### Design Bundles (only if Browser = Yes)
+
+If user answered Yes to browser automation:
+
+**Question 7:** "Want frontend design iteration tools?"
+- Header: "Frontend"
+- Options: Yes / No
+
+**Question 8:** "Do you use Figma?"
+- Header: "Figma"
+- Options: Yes / No
+
+If user answered No to browser automation, skip questions 7-8 and set both to false.
+
+### Specialist Bundles (Multi-select)
+
+**Question 9:** "Enable any specialist tools?"
+- Header: "Specialist"
+- multiSelect: true
+- Options:
+  - "Agent-Native Development" - Building AI-native applications
+  - "Plugin Development" - Developing Claude Code plugins
+  - "Every.to Style" - Content writing for Every.to
+  - "iOS/Xcode" - iOS and Xcode development
+
+### Utilities Bundle
+
+**Question 10:** "Enable utility tools? (image gen, cloud storage, etc.)"
+- Header: "Utilities"
+- Options: Yes / No
+
+## Step 4: Build the Configuration JSON
+
+Create the bundle config based on answers:
 
 ```json
 {
   "$schema": "./compound.config.schema.json",
-  "description": "Custom configuration generated by /compound:configure",
-  "agents": {
-    "enabled": ["*"],
-    "disabled": []
-  },
-  "commands": {
-    "enabled": ["*"],
-    "disabled": ["xcode-test", "feature-video", "report-bug"]
-  },
-  "skills": {
-    "enabled": ["*"],
-    "disabled": []
-  },
-  "mcpServers": {
-    "enabled": ["*"],
-    "disabled": []
+  "version": "2.0",
+  "description": "Bundle configuration generated by /compound:configure",
+  "bundles": {
+    "ruby-rails": <answer from Q1>,
+    "ruby-gems": <answer from Q2>,
+    "python": <answer from Q3>,
+    "typescript": <answer from Q4>,
+    "data-migrations": <answer from Q5>,
+    "browser-automation": <answer from Q6>,
+    "frontend-design": <answer from Q7 or false if Q6 was No>,
+    "figma": <answer from Q8 or false if Q6 was No>,
+    "agent-native-dev": <true if selected in Q9>,
+    "plugin-dev": <true if selected in Q9>,
+    "every-style": <true if selected in Q9>,
+    "ios-xcode": <true if selected in Q9>,
+    "utilities": <answer from Q10>
   }
 }
 ```
 
-**Add to disabled arrays based on answers:**
+## Step 5: Save Configuration
 
-| Answer | Add to agents.disabled | Add to skills.disabled | Add to commands.disabled |
-|--------|----------------------|----------------------|------------------------|
-| Ruby/Rails | `kieran-python-reviewer`, `kieran-typescript-reviewer` | | |
-| Python | `kieran-rails-reviewer`, `dhh-rails-reviewer`, `kieran-typescript-reviewer` | `dhh-rails-style`, `andrew-kane-gem-writer` | |
-| TypeScript | `kieran-rails-reviewer`, `dhh-rails-reviewer`, `kieran-python-reviewer` | `dhh-rails-style`, `andrew-kane-gem-writer` | |
-| No Figma | `figma-design-sync`, `design-implementation-reviewer`, `design-iterator` | | |
-| No browser | | `agent-browser` | `test-browser` |
-| No image gen | | `gemini-imagegen` | |
-| No Every style | `every-style-editor` | `every-style-editor` | |
-
-## Step 4: Save Configuration to User's Home Directory
-
-Write the config JSON from Step 3 to `~/.claude/compound-engineering.config.json`:
+Write the config to `~/.claude/compound-engineering.config.json`:
 
 ```bash
-# Get the absolute path
 CONFIG_PATH="$HOME/.claude/compound-engineering.config.json"
 ```
 
-Use the Write tool with the absolute path (e.g., `/Users/username/.claude/compound-engineering.config.json`).
+Use the Write tool with the absolute path.
 
-## Step 5: Copy Config to Plugin and Run Build
-
-Copy the config to the plugin directory and run the build:
+## Step 6: Copy Config to Plugin and Run Build
 
 ```bash
 cp ~/.claude/compound-engineering.config.json PLUGIN_PATH/compound.config.json
 cd PLUGIN_PATH && ./bin/build
 ```
 
-Note the output showing enabled/disabled counts.
+Capture and display the build output, which will show:
+- Dependency resolutions (if any)
+- Enabled/disabled bundles
+- Component counts
 
-## Step 6: Write Version Marker
-
-Read the plugin version from `PLUGIN_PATH/.claude-plugin/plugin.json` and write it to the version marker file:
+## Step 7: Write Version Marker
 
 ```bash
-# Extract version and write to marker file
 VERSION=$(grep -o '"version": *"[^"]*"' PLUGIN_PATH/.claude-plugin/plugin.json | head -1 | cut -d'"' -f4)
 echo "$VERSION" > ~/.claude/compound-engineering.last-build-version
 ```
 
-## Step 7: Summary
+## Step 8: Summary
 
 Tell the user:
 
 ```
 Configuration complete!
 
-Your preferences saved to: ~/.claude/compound-engineering.config.json
+Bundles enabled:
+- Core (always on): workflows, research, code review, PR tools
+- [List user-enabled bundles]
 
-Components status:
-- Agents: X enabled (Y disabled)
-- Commands: X enabled (Y disabled)
-- Skills: X enabled (Y disabled)
+Bundles disabled:
+- [List user-disabled bundles]
+
+Dependencies auto-resolved:
+- [List any auto-enabled bundles, e.g., "browser-automation (required by frontend-design)"]
+
+Components: X agents, Y commands, Z skills
 
 **Restart Claude Code to apply changes.**
 
-Your preferences will automatically apply when the plugin updates.
-
-To reconfigure:
-- Run /compound:configure again
-
-To restore full plugin:
-- Delete ~/.claude/compound-engineering.config.json
-- Delete ~/.claude/compound-engineering.last-build-version
-- Restart Claude Code (plugin will rebuild with all components)
+To reconfigure: Run /compound:configure again
+To restore all: Delete ~/.claude/compound-engineering.config.json and restart
 ```
+
+## Bundle Reference
+
+| Bundle | Components | Depends On |
+|--------|------------|------------|
+| **core** (always) | plan, review, work, compound, brainstorm commands + core research agents + compound-docs, brainstorming, git-worktree | - |
+| **code-review** (always) | architecture, simplicity, patterns, performance, security reviewers | - |
+| **research** (always) | best-practices, framework-docs, git-history, spec-flow + deepen-plan, plan_review | - |
+| **pr-workflow** (always) | pr-comment-resolver + resolve commands, triage, changelog | - |
+| **ruby-rails** | Rails reviewers, lint, Stimulus reviewer + dhh-rails-style | - |
+| **ruby-gems** | ankane-readme-writer + andrew-kane-gem-writer | - |
+| **python** | kieran-python-reviewer | - |
+| **typescript** | kieran-typescript-reviewer | - |
+| **data-migrations** | data-integrity, migration-expert, deployment-verification | - |
+| **browser-automation** | bug-reproduction-validator + agent-browser + test-browser, reproduce-bug | - |
+| **frontend-design** | design-iterator + frontend-design skill | browser-automation |
+| **figma** | figma-design-sync, design-implementation-reviewer | browser-automation |
+| **agent-native-dev** | agent-native-reviewer + architecture skill + audit command | - |
+| **plugin-dev** | skill-creator, create-agent-skills + plugin commands | - |
+| **every-style** | every-style-editor agent + skill | - |
+| **ios-xcode** | xcode-test command | - |
+| **utilities** | gemini-imagegen, rclone, file-todos, dspy-ruby + feature-video, lfg | - |
+| **fork-tools** (always) | sync-reviewer + sync-upstream + configure | - |
 
 ## Error Handling
 
-- **No bin/build:** Plugin version doesn't support configuration
+- **No bundles.json:** Plugin version doesn't support bundle configuration
 - **Build fails:** Check Ruby is installed (`ruby --version`)
-- **Permission denied:** Check file permissions
+- **Dependency conflicts:** Build script auto-resolves, just inform user
 
 ## What Happens on Plugin Update
 
 When the marketplace updates compound-engineering:
 1. SessionStart hook runs `bin/auto-rebuild`
-2. Script detects version change (compares plugin.json to last-build-version)
+2. Script detects version change
 3. Copies saved config from `~/.claude/compound-engineering.config.json`
-4. Runs `bin/build` to apply preferences
+4. Runs `bin/build` with bundle resolution
 5. Updates version marker
-
-This is automatic - no user action needed.
+6. New components in enabled bundles are automatically included
